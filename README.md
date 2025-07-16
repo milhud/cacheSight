@@ -7,7 +7,7 @@
 - dynamic profiling: perfomance counter sampling with perf_event
 - hardware detection: automatic cache hierarchy discovery
 - pattern classification: identifies 15+ cache access patterns
-- actionable recommendations: provides specific code transformations
+- provides actionable recommendations
 
 ## Detected Cache Patterns
 - sequential - recommends vectorization, prefetching

@@ -1,0 +1,1353 @@
+Cache Optimization Recommendations
+==================================
+
+Total recommendations: 40
+
+Recommendation #1
+-----------------
+Type: CACHE_BLOCKING
+Priority: 3
+Expected Improvement: 30.0%
+Confidence: 70%
+Implementation Difficulty: 5/10
+Location: /home/codio/workspace/testDir/v11/test_all_cache_patterns.c:22
+
+Rationale:
+Indirect pointer access benefits from blocking to keep pointers in cache during processing.
+
+Compiler Flags:
+-floop-block --param l1-cache-size=32 --param l2-cache-size=512
+
+Code Example:
+// Cache blocking for indirect access
+#define BLOCK_SIZE 64
+// Process in cache-sized blocks
+for (int block = 0; block < n; block += BLOCK_SIZE) {
+    int block_end = min(block + BLOCK_SIZE, n);
+    // First pass: prefetch
+    for (int i = block; i < block_end; i++) {
+        __builtin_prefetch(pointers[i], 0, 3);
+    }
+    // Second pass: process
+    for (int i = block; i < block_end; i++) {
+        sum += *pointers[i];
+    }
+}
+
+========================================
+
+Recommendation #2
+-----------------
+Type: CACHE_BLOCKING
+Priority: 3
+Expected Improvement: 30.0%
+Confidence: 70%
+Implementation Difficulty: 5/10
+Location: /home/codio/workspace/testDir/v11/test_all_cache_patterns.c:34
+
+Rationale:
+Indirect pointer access benefits from blocking to keep pointers in cache during processing.
+
+Compiler Flags:
+-floop-block --param l1-cache-size=32 --param l2-cache-size=512
+
+Code Example:
+// Cache blocking for indirect access
+#define BLOCK_SIZE 64
+// Process in cache-sized blocks
+for (int block = 0; block < n; block += BLOCK_SIZE) {
+    int block_end = min(block + BLOCK_SIZE, n);
+    // First pass: prefetch
+    for (int i = block; i < block_end; i++) {
+        __builtin_prefetch(pointers[i], 0, 3);
+    }
+    // Second pass: process
+    for (int i = block; i < block_end; i++) {
+        sum += *pointers[i];
+    }
+}
+
+========================================
+
+Recommendation #3
+-----------------
+Type: CACHE_BLOCKING
+Priority: 3
+Expected Improvement: 30.0%
+Confidence: 70%
+Implementation Difficulty: 5/10
+Location: /home/codio/workspace/testDir/v11/test_all_cache_patterns.c:34
+
+Rationale:
+Indirect pointer access benefits from blocking to keep pointers in cache during processing.
+
+Compiler Flags:
+-floop-block --param l1-cache-size=32 --param l2-cache-size=512
+
+Code Example:
+// Cache blocking for indirect access
+#define BLOCK_SIZE 64
+// Process in cache-sized blocks
+for (int block = 0; block < n; block += BLOCK_SIZE) {
+    int block_end = min(block + BLOCK_SIZE, n);
+    // First pass: prefetch
+    for (int i = block; i < block_end; i++) {
+        __builtin_prefetch(pointers[i], 0, 3);
+    }
+    // Second pass: process
+    for (int i = block; i < block_end; i++) {
+        sum += *pointers[i];
+    }
+}
+
+========================================
+
+Recommendation #4
+-----------------
+Type: CACHE_BLOCKING
+Priority: 3
+Expected Improvement: 30.0%
+Confidence: 70%
+Implementation Difficulty: 5/10
+Location: /home/codio/workspace/testDir/v11/test_all_cache_patterns.c:47
+
+Rationale:
+Indirect pointer access benefits from blocking to keep pointers in cache during processing.
+
+Compiler Flags:
+-floop-block --param l1-cache-size=32 --param l2-cache-size=512
+
+Code Example:
+// Cache blocking for indirect access
+#define BLOCK_SIZE 64
+// Process in cache-sized blocks
+for (int block = 0; block < n; block += BLOCK_SIZE) {
+    int block_end = min(block + BLOCK_SIZE, n);
+    // First pass: prefetch
+    for (int i = block; i < block_end; i++) {
+        __builtin_prefetch(pointers[i], 0, 3);
+    }
+    // Second pass: process
+    for (int i = block; i < block_end; i++) {
+        sum += *pointers[i];
+    }
+}
+
+========================================
+
+Recommendation #5
+-----------------
+Type: DATA_LAYOUT_CHANGE
+Priority: 3
+Expected Improvement: 35.0%
+Confidence: 60%
+Implementation Difficulty: 8/10
+Location: /home/codio/workspace/testDir/v11/test_all_cache_patterns.c:52
+
+Rationale:
+Random access patterns cannot benefit from hardware prefetching. Reorganizing access order or data layout is necessary.
+
+Compiler Flags:
+-O3 -march=native -mtune=native
+
+Implementation Guide:
+1. Sort indices if possible to improve locality
+2. Implement software caching for frequently accessed data
+3. Consider data structure reorganization
+4. Use smaller data types if possible
+
+Code Example:
+// Option 1: Sort indices for better locality
+int sorted_indices[N];
+memcpy(sorted_indices, indices, N * sizeof(int));
+qsort(sorted_indices, N, sizeof(int), compare_int);
+for (int i = 0; i < N; i++) {
+    sum += data[sorted_indices[i]];
+}
+
+// Option 2: Use software cache/memoization
+struct cache_line {
+    int tag;
+    double values[8];
+} sw_cache[CACHE_SIZE];
+
+========================================
+
+Recommendation #6
+-----------------
+Type: MEMORY_POOLING
+Priority: 3
+Expected Improvement: 20.0%
+Confidence: 70%
+Implementation Difficulty: 6/10
+Location: /home/codio/workspace/testDir/v11/test_all_cache_patterns.c:52
+
+Rationale:
+Memory pooling keeps related data together, improving cache locality for random access.
+
+Compiler Flags:
+-O3 -march=native -mtune=native
+
+Code Example:
+// Use memory pool to improve locality
+typedef struct {
+    void* blocks[MAX_BLOCKS];
+    size_t block_size;
+    int free_list[MAX_BLOCKS];
+} memory_pool_t;
+
+// Allocate from pool instead of malloc
+data = pool_alloc(&pool, size);
+
+========================================
+
+Recommendation #7
+-----------------
+Type: ACCESS_REORDER
+Priority: 3
+Expected Improvement: 15.0%
+Confidence: 50%
+Implementation Difficulty: 8/10
+Location: /home/codio/workspace/testDir/v11/test_all_cache_patterns.c:52
+
+Rationale:
+High severity pattern requires detailed profiling to identify the best optimization strategy.
+
+Compiler Flags:
+-floop-interchange -ftree-loop-distribution -ftree-loop-im
+
+Code Example:
+// Profile-guided optimization
+1. Compile with -fprofile-generate
+2. Run representative workload
+3. Recompile with -fprofile-use
+
+// Manual profiling
+#ifdef PROFILE
+uint64_t start = rdtsc();
+// Hot code here
+uint64_t cycles = rdtsc() - start;
+profile_record(cycles);
+#endif
+
+========================================
+
+Recommendation #8
+-----------------
+Type: CACHE_BLOCKING
+Priority: 3
+Expected Improvement: 30.0%
+Confidence: 70%
+Implementation Difficulty: 5/10
+Location: /home/codio/workspace/testDir/v11/test_all_cache_patterns.c:52
+
+Rationale:
+Indirect pointer access benefits from blocking to keep pointers in cache during processing.
+
+Compiler Flags:
+-floop-block --param l1-cache-size=32 --param l2-cache-size=512
+
+Code Example:
+// Cache blocking for indirect access
+#define BLOCK_SIZE 64
+// Process in cache-sized blocks
+for (int block = 0; block < n; block += BLOCK_SIZE) {
+    int block_end = min(block + BLOCK_SIZE, n);
+    // First pass: prefetch
+    for (int i = block; i < block_end; i++) {
+        __builtin_prefetch(pointers[i], 0, 3);
+    }
+    // Second pass: process
+    for (int i = block; i < block_end; i++) {
+        sum += *pointers[i];
+    }
+}
+
+========================================
+
+Recommendation #9
+-----------------
+Type: CACHE_BLOCKING
+Priority: 3
+Expected Improvement: 30.0%
+Confidence: 70%
+Implementation Difficulty: 5/10
+Location: /home/codio/workspace/testDir/v11/test_all_cache_patterns.c:64
+
+Rationale:
+Indirect pointer access benefits from blocking to keep pointers in cache during processing.
+
+Compiler Flags:
+-floop-block --param l1-cache-size=32 --param l2-cache-size=512
+
+Code Example:
+// Cache blocking for indirect access
+#define BLOCK_SIZE 64
+// Process in cache-sized blocks
+for (int block = 0; block < n; block += BLOCK_SIZE) {
+    int block_end = min(block + BLOCK_SIZE, n);
+    // First pass: prefetch
+    for (int i = block; i < block_end; i++) {
+        __builtin_prefetch(pointers[i], 0, 3);
+    }
+    // Second pass: process
+    for (int i = block; i < block_end; i++) {
+        sum += *pointers[i];
+    }
+}
+
+========================================
+
+Recommendation #10
+-----------------
+Type: CACHE_BLOCKING
+Priority: 3
+Expected Improvement: 30.0%
+Confidence: 70%
+Implementation Difficulty: 5/10
+Location: /home/codio/workspace/testDir/v11/test_all_cache_patterns.c:69
+
+Rationale:
+Indirect pointer access benefits from blocking to keep pointers in cache during processing.
+
+Compiler Flags:
+-floop-block --param l1-cache-size=32 --param l2-cache-size=512
+
+Code Example:
+// Cache blocking for indirect access
+#define BLOCK_SIZE 64
+// Process in cache-sized blocks
+for (int block = 0; block < n; block += BLOCK_SIZE) {
+    int block_end = min(block + BLOCK_SIZE, n);
+    // First pass: prefetch
+    for (int i = block; i < block_end; i++) {
+        __builtin_prefetch(pointers[i], 0, 3);
+    }
+    // Second pass: process
+    for (int i = block; i < block_end; i++) {
+        sum += *pointers[i];
+    }
+}
+
+========================================
+
+Recommendation #11
+-----------------
+Type: DATA_LAYOUT_CHANGE
+Priority: 3
+Expected Improvement: 35.0%
+Confidence: 60%
+Implementation Difficulty: 8/10
+Location: /home/codio/workspace/testDir/v11/test_all_cache_patterns.c:69
+
+Rationale:
+Random access patterns cannot benefit from hardware prefetching. Reorganizing access order or data layout is necessary.
+
+Compiler Flags:
+-O3 -march=native -mtune=native
+
+Implementation Guide:
+1. Sort indices if possible to improve locality
+2. Implement software caching for frequently accessed data
+3. Consider data structure reorganization
+4. Use smaller data types if possible
+
+Code Example:
+// Option 1: Sort indices for better locality
+int sorted_indices[N];
+memcpy(sorted_indices, indices, N * sizeof(int));
+qsort(sorted_indices, N, sizeof(int), compare_int);
+for (int i = 0; i < N; i++) {
+    sum += data[sorted_indices[i]];
+}
+
+// Option 2: Use software cache/memoization
+struct cache_line {
+    int tag;
+    double values[8];
+} sw_cache[CACHE_SIZE];
+
+========================================
+
+Recommendation #12
+-----------------
+Type: MEMORY_POOLING
+Priority: 3
+Expected Improvement: 20.0%
+Confidence: 70%
+Implementation Difficulty: 6/10
+Location: /home/codio/workspace/testDir/v11/test_all_cache_patterns.c:69
+
+Rationale:
+Memory pooling keeps related data together, improving cache locality for random access.
+
+Compiler Flags:
+-O3 -march=native -mtune=native
+
+Code Example:
+// Use memory pool to improve locality
+typedef struct {
+    void* blocks[MAX_BLOCKS];
+    size_t block_size;
+    int free_list[MAX_BLOCKS];
+} memory_pool_t;
+
+// Allocate from pool instead of malloc
+data = pool_alloc(&pool, size);
+
+========================================
+
+Recommendation #13
+-----------------
+Type: ACCESS_REORDER
+Priority: 3
+Expected Improvement: 15.0%
+Confidence: 50%
+Implementation Difficulty: 8/10
+Location: /home/codio/workspace/testDir/v11/test_all_cache_patterns.c:69
+
+Rationale:
+High severity pattern requires detailed profiling to identify the best optimization strategy.
+
+Compiler Flags:
+-floop-interchange -ftree-loop-distribution -ftree-loop-im
+
+Code Example:
+// Profile-guided optimization
+1. Compile with -fprofile-generate
+2. Run representative workload
+3. Recompile with -fprofile-use
+
+// Manual profiling
+#ifdef PROFILE
+uint64_t start = rdtsc();
+// Hot code here
+uint64_t cycles = rdtsc() - start;
+profile_record(cycles);
+#endif
+
+========================================
+
+Recommendation #14
+-----------------
+Type: CACHE_BLOCKING
+Priority: 3
+Expected Improvement: 30.0%
+Confidence: 70%
+Implementation Difficulty: 5/10
+Location: /home/codio/workspace/testDir/v11/test_all_cache_patterns.c:69
+
+Rationale:
+Indirect pointer access benefits from blocking to keep pointers in cache during processing.
+
+Compiler Flags:
+-floop-block --param l1-cache-size=32 --param l2-cache-size=512
+
+Code Example:
+// Cache blocking for indirect access
+#define BLOCK_SIZE 64
+// Process in cache-sized blocks
+for (int block = 0; block < n; block += BLOCK_SIZE) {
+    int block_end = min(block + BLOCK_SIZE, n);
+    // First pass: prefetch
+    for (int i = block; i < block_end; i++) {
+        __builtin_prefetch(pointers[i], 0, 3);
+    }
+    // Second pass: process
+    for (int i = block; i < block_end; i++) {
+        sum += *pointers[i];
+    }
+}
+
+========================================
+
+Recommendation #15
+-----------------
+Type: DATA_LAYOUT_CHANGE
+Priority: 3
+Expected Improvement: 35.0%
+Confidence: 60%
+Implementation Difficulty: 8/10
+Location: /home/codio/workspace/testDir/v11/test_all_cache_patterns.c:76
+
+Rationale:
+Random access patterns cannot benefit from hardware prefetching. Reorganizing access order or data layout is necessary.
+
+Compiler Flags:
+-O3 -march=native -mtune=native
+
+Implementation Guide:
+1. Sort indices if possible to improve locality
+2. Implement software caching for frequently accessed data
+3. Consider data structure reorganization
+4. Use smaller data types if possible
+
+Code Example:
+// Option 1: Sort indices for better locality
+int sorted_indices[N];
+memcpy(sorted_indices, indices, N * sizeof(int));
+qsort(sorted_indices, N, sizeof(int), compare_int);
+for (int i = 0; i < N; i++) {
+    sum += data[sorted_indices[i]];
+}
+
+// Option 2: Use software cache/memoization
+struct cache_line {
+    int tag;
+    double values[8];
+} sw_cache[CACHE_SIZE];
+
+========================================
+
+Recommendation #16
+-----------------
+Type: MEMORY_POOLING
+Priority: 3
+Expected Improvement: 20.0%
+Confidence: 70%
+Implementation Difficulty: 6/10
+Location: /home/codio/workspace/testDir/v11/test_all_cache_patterns.c:76
+
+Rationale:
+Memory pooling keeps related data together, improving cache locality for random access.
+
+Compiler Flags:
+-O3 -march=native -mtune=native
+
+Code Example:
+// Use memory pool to improve locality
+typedef struct {
+    void* blocks[MAX_BLOCKS];
+    size_t block_size;
+    int free_list[MAX_BLOCKS];
+} memory_pool_t;
+
+// Allocate from pool instead of malloc
+data = pool_alloc(&pool, size);
+
+========================================
+
+Recommendation #17
+-----------------
+Type: ACCESS_REORDER
+Priority: 3
+Expected Improvement: 15.0%
+Confidence: 50%
+Implementation Difficulty: 8/10
+Location: /home/codio/workspace/testDir/v11/test_all_cache_patterns.c:76
+
+Rationale:
+High severity pattern requires detailed profiling to identify the best optimization strategy.
+
+Compiler Flags:
+-floop-interchange -ftree-loop-distribution -ftree-loop-im
+
+Code Example:
+// Profile-guided optimization
+1. Compile with -fprofile-generate
+2. Run representative workload
+3. Recompile with -fprofile-use
+
+// Manual profiling
+#ifdef PROFILE
+uint64_t start = rdtsc();
+// Hot code here
+uint64_t cycles = rdtsc() - start;
+profile_record(cycles);
+#endif
+
+========================================
+
+Recommendation #18
+-----------------
+Type: CACHE_BLOCKING
+Priority: 3
+Expected Improvement: 30.0%
+Confidence: 70%
+Implementation Difficulty: 5/10
+Location: /home/codio/workspace/testDir/v11/test_all_cache_patterns.c:80
+
+Rationale:
+Indirect pointer access benefits from blocking to keep pointers in cache during processing.
+
+Compiler Flags:
+-floop-block --param l1-cache-size=32 --param l2-cache-size=512
+
+Code Example:
+// Cache blocking for indirect access
+#define BLOCK_SIZE 64
+// Process in cache-sized blocks
+for (int block = 0; block < n; block += BLOCK_SIZE) {
+    int block_end = min(block + BLOCK_SIZE, n);
+    // First pass: prefetch
+    for (int i = block; i < block_end; i++) {
+        __builtin_prefetch(pointers[i], 0, 3);
+    }
+    // Second pass: process
+    for (int i = block; i < block_end; i++) {
+        sum += *pointers[i];
+    }
+}
+
+========================================
+
+Recommendation #19
+-----------------
+Type: CACHE_BLOCKING
+Priority: 3
+Expected Improvement: 30.0%
+Confidence: 70%
+Implementation Difficulty: 5/10
+Location: /home/codio/workspace/testDir/v11/test_all_cache_patterns.c:92
+
+Rationale:
+Indirect pointer access benefits from blocking to keep pointers in cache during processing.
+
+Compiler Flags:
+-floop-block --param l1-cache-size=32 --param l2-cache-size=512
+
+Code Example:
+// Cache blocking for indirect access
+#define BLOCK_SIZE 64
+// Process in cache-sized blocks
+for (int block = 0; block < n; block += BLOCK_SIZE) {
+    int block_end = min(block + BLOCK_SIZE, n);
+    // First pass: prefetch
+    for (int i = block; i < block_end; i++) {
+        __builtin_prefetch(pointers[i], 0, 3);
+    }
+    // Second pass: process
+    for (int i = block; i < block_end; i++) {
+        sum += *pointers[i];
+    }
+}
+
+========================================
+
+Recommendation #20
+-----------------
+Type: CACHE_BLOCKING
+Priority: 3
+Expected Improvement: 30.0%
+Confidence: 70%
+Implementation Difficulty: 5/10
+Location: /home/codio/workspace/testDir/v11/test_all_cache_patterns.c:92
+
+Rationale:
+Indirect pointer access benefits from blocking to keep pointers in cache during processing.
+
+Compiler Flags:
+-floop-block --param l1-cache-size=32 --param l2-cache-size=512
+
+Code Example:
+// Cache blocking for indirect access
+#define BLOCK_SIZE 64
+// Process in cache-sized blocks
+for (int block = 0; block < n; block += BLOCK_SIZE) {
+    int block_end = min(block + BLOCK_SIZE, n);
+    // First pass: prefetch
+    for (int i = block; i < block_end; i++) {
+        __builtin_prefetch(pointers[i], 0, 3);
+    }
+    // Second pass: process
+    for (int i = block; i < block_end; i++) {
+        sum += *pointers[i];
+    }
+}
+
+========================================
+
+Recommendation #21
+-----------------
+Type: CACHE_BLOCKING
+Priority: 3
+Expected Improvement: 30.0%
+Confidence: 70%
+Implementation Difficulty: 5/10
+Location: /home/codio/workspace/testDir/v11/test_all_cache_patterns.c:105
+
+Rationale:
+Indirect pointer access benefits from blocking to keep pointers in cache during processing.
+
+Compiler Flags:
+-floop-block --param l1-cache-size=32 --param l2-cache-size=512
+
+Code Example:
+// Cache blocking for indirect access
+#define BLOCK_SIZE 64
+// Process in cache-sized blocks
+for (int block = 0; block < n; block += BLOCK_SIZE) {
+    int block_end = min(block + BLOCK_SIZE, n);
+    // First pass: prefetch
+    for (int i = block; i < block_end; i++) {
+        __builtin_prefetch(pointers[i], 0, 3);
+    }
+    // Second pass: process
+    for (int i = block; i < block_end; i++) {
+        sum += *pointers[i];
+    }
+}
+
+========================================
+
+Recommendation #22
+-----------------
+Type: LOOP_VECTORIZE
+Priority: 3
+Expected Improvement: 40.0%
+Confidence: 90%
+Implementation Difficulty: 3/10
+Location: /home/codio/workspace/testDir/v11/test_all_cache_patterns.c:105
+
+Rationale:
+Sequential access patterns are ideal for SIMD vectorization. Processing 4-8 elements simultaneously can improve performance by 4-8x.
+
+Compiler Flags:
+-O3 -march=native -ftree-vectorize -mavx2 -mfma -fopt-info-vec
+
+Implementation Guide:
+1. Ensure data is aligned to 32-byte boundaries
+2. Use -march=native for auto-vectorization
+3. Consider #pragma omp simd for explicit vectorization
+4. Check vectorization report with -fopt-info-vec
+
+Code Example:
+// Vectorize sequential access
+#pragma omp simd
+for (int i = 0; i < n; i++) {
+    sum += data[i];
+}
+
+// Or use intrinsics for more control:
+#include <immintrin.h>
+__m256d vsum = _mm256_setzero_pd();
+for (int i = 0; i < n; i += 4) {
+    __m256d vdata = _mm256_load_pd(&data[i]);
+    vsum = _mm256_add_pd(vsum, vdata);
+}
+
+========================================
+
+Recommendation #23
+-----------------
+Type: PREFETCH_HINTS
+Priority: 3
+Expected Improvement: 15.0%
+Confidence: 75%
+Implementation Difficulty: 3/10
+Location: /home/codio/workspace/testDir/v11/test_all_cache_patterns.c:105
+
+Rationale:
+Software prefetching can hide memory latency by bringing data into cache before it's needed. With 5.0% miss rate and SEQUENTIAL access pattern, prefetching can reduce stalls.
+
+Compiler Flags:
+-fprefetch-loop-arrays -msse4.2
+
+Implementation Guide:
+1. Identify the access pattern and stride
+2. Calculate prefetch distance (typically 4-16 iterations ahead)
+3. Insert prefetch intrinsics or builtins
+4. Use _MM_HINT_T0 for L1, _MM_HINT_T1 for L2
+5. Profile to find optimal prefetch distance
+
+Code Example:
+// Add software prefetch hints
+#include <xmmintrin.h>  // For _mm_prefetch
+
+for (int i = 0; i < n; i++) {
+    // Prefetch future data
+    if (i + 4 < n) {
+        _mm_prefetch(&data[i + 4], _MM_HINT_T0);  // Prefetch to L1
+    }
+    
+    // Process current element
+    result[i] = process(data[i]);
+}
+
+// Alternative: Use compiler builtin
+for (int i = 0; i < n; i++) {
+    __builtin_prefetch(&data[i + 4], 0, 3);
+    result[i] = process(data[i]);
+}
+
+========================================
+
+Recommendation #24
+-----------------
+Type: CACHE_BLOCKING
+Priority: 3
+Expected Improvement: 30.0%
+Confidence: 70%
+Implementation Difficulty: 5/10
+Location: /home/codio/workspace/testDir/v11/test_all_cache_patterns.c:110
+
+Rationale:
+Indirect pointer access benefits from blocking to keep pointers in cache during processing.
+
+Compiler Flags:
+-floop-block --param l1-cache-size=32 --param l2-cache-size=512
+
+Code Example:
+// Cache blocking for indirect access
+#define BLOCK_SIZE 64
+// Process in cache-sized blocks
+for (int block = 0; block < n; block += BLOCK_SIZE) {
+    int block_end = min(block + BLOCK_SIZE, n);
+    // First pass: prefetch
+    for (int i = block; i < block_end; i++) {
+        __builtin_prefetch(pointers[i], 0, 3);
+    }
+    // Second pass: process
+    for (int i = block; i < block_end; i++) {
+        sum += *pointers[i];
+    }
+}
+
+========================================
+
+Recommendation #25
+-----------------
+Type: CACHE_BLOCKING
+Priority: 3
+Expected Improvement: 30.0%
+Confidence: 70%
+Implementation Difficulty: 5/10
+Location: /home/codio/workspace/testDir/v11/test_all_cache_patterns.c:125
+
+Rationale:
+Indirect pointer access benefits from blocking to keep pointers in cache during processing.
+
+Compiler Flags:
+-floop-block --param l1-cache-size=32 --param l2-cache-size=512
+
+Code Example:
+// Cache blocking for indirect access
+#define BLOCK_SIZE 64
+// Process in cache-sized blocks
+for (int block = 0; block < n; block += BLOCK_SIZE) {
+    int block_end = min(block + BLOCK_SIZE, n);
+    // First pass: prefetch
+    for (int i = block; i < block_end; i++) {
+        __builtin_prefetch(pointers[i], 0, 3);
+    }
+    // Second pass: process
+    for (int i = block; i < block_end; i++) {
+        sum += *pointers[i];
+    }
+}
+
+========================================
+
+Recommendation #26
+-----------------
+Type: DATA_LAYOUT_CHANGE
+Priority: 3
+Expected Improvement: 50.0%
+Confidence: 80%
+Implementation Difficulty: 7/10
+Location: /home/codio/workspace/testDir/v11/test_all_cache_patterns.c:141
+
+Rationale:
+Structure of Arrays (SoA) improves cache efficiency for scattered field access. Current layout wastes 25% of cache line transfers. SoA enables vectorization.
+
+Compiler Flags:
+-O3 -march=native -mtune=native
+
+Implementation Guide:
+1. Identify fields that are accessed together
+2. Group hot fields in separate arrays
+3. Allocate arrays with proper alignment
+4. Update all access patterns in code
+5. Consider SIMD opportunities with SoA layout
+
+Code Example:
+// Original Array of Structures (AoS)
+struct Particle {
+    double x, y, z;
+    double vx, vy, vz;
+    double mass;
+};
+Particle particles[N];
+
+// Transformed to Structure of Arrays (SoA)
+struct ParticleArray {
+    double *x, *y, *z;
+    double *vx, *vy, *vz;
+    double *mass;
+    size_t count;
+};
+
+// Access pattern changes from:
+// for (i = 0; i < N; i++) 
+//     particles[i].x += particles[i].vx * dt;
+// To:
+for (i = 0; i < N; i++)
+    particle_array.x[i] += particle_array.vx[i] * dt;
+
+========================================
+
+Recommendation #27
+-----------------
+Type: PREFETCH_HINTS
+Priority: 3
+Expected Improvement: 18.0%
+Confidence: 60%
+Implementation Difficulty: 7/10
+Location: /home/codio/workspace/testDir/v11/test_all_cache_patterns.c:141
+
+Rationale:
+Gather/scatter patterns can benefit from specialized prefetch instructions on modern CPUs.
+
+Compiler Flags:
+-fprefetch-loop-arrays -msse4.2
+
+Code Example:
+// Gather prefetch for indirect access
+#ifdef __AVX512PF__
+_mm512_prefetch_i32gather_pd(vindices, base_addr, 8, _MM_HINT_T0);
+#else
+// Manual gather prefetch
+for (int i = 0; i < n; i++) {
+    __builtin_prefetch(&data[indices[i+8]], 0, 1);
+    result[i] = data[indices[i]];
+}
+#endif
+
+========================================
+
+Recommendation #28
+-----------------
+Type: ACCESS_REORDER
+Priority: 3
+Expected Improvement: 15.0%
+Confidence: 50%
+Implementation Difficulty: 8/10
+Location: /home/codio/workspace/testDir/v11/test_all_cache_patterns.c:141
+
+Rationale:
+High severity pattern requires detailed profiling to identify the best optimization strategy.
+
+Compiler Flags:
+-floop-interchange -ftree-loop-distribution -ftree-loop-im
+
+Code Example:
+// Profile-guided optimization
+1. Compile with -fprofile-generate
+2. Run representative workload
+3. Recompile with -fprofile-use
+
+// Manual profiling
+#ifdef PROFILE
+uint64_t start = rdtsc();
+// Hot code here
+uint64_t cycles = rdtsc() - start;
+profile_record(cycles);
+#endif
+
+========================================
+
+Recommendation #29
+-----------------
+Type: CACHE_BLOCKING
+Priority: 3
+Expected Improvement: 30.0%
+Confidence: 70%
+Implementation Difficulty: 5/10
+Location: /home/codio/workspace/testDir/v11/test_all_cache_patterns.c:141
+
+Rationale:
+Indirect pointer access benefits from blocking to keep pointers in cache during processing.
+
+Compiler Flags:
+-floop-block --param l1-cache-size=32 --param l2-cache-size=512
+
+Code Example:
+// Cache blocking for indirect access
+#define BLOCK_SIZE 64
+// Process in cache-sized blocks
+for (int block = 0; block < n; block += BLOCK_SIZE) {
+    int block_end = min(block + BLOCK_SIZE, n);
+    // First pass: prefetch
+    for (int i = block; i < block_end; i++) {
+        __builtin_prefetch(pointers[i], 0, 3);
+    }
+    // Second pass: process
+    for (int i = block; i < block_end; i++) {
+        sum += *pointers[i];
+    }
+}
+
+========================================
+
+Recommendation #30
+-----------------
+Type: CACHE_BLOCKING
+Priority: 3
+Expected Improvement: 30.0%
+Confidence: 70%
+Implementation Difficulty: 5/10
+Location: /home/codio/workspace/testDir/v11/test_all_cache_patterns.c:151
+
+Rationale:
+Indirect pointer access benefits from blocking to keep pointers in cache during processing.
+
+Compiler Flags:
+-floop-block --param l1-cache-size=32 --param l2-cache-size=512
+
+Code Example:
+// Cache blocking for indirect access
+#define BLOCK_SIZE 64
+// Process in cache-sized blocks
+for (int block = 0; block < n; block += BLOCK_SIZE) {
+    int block_end = min(block + BLOCK_SIZE, n);
+    // First pass: prefetch
+    for (int i = block; i < block_end; i++) {
+        __builtin_prefetch(pointers[i], 0, 3);
+    }
+    // Second pass: process
+    for (int i = block; i < block_end; i++) {
+        sum += *pointers[i];
+    }
+}
+
+========================================
+
+Recommendation #31
+-----------------
+Type: CACHE_BLOCKING
+Priority: 3
+Expected Improvement: 30.0%
+Confidence: 70%
+Implementation Difficulty: 5/10
+Location: /home/codio/workspace/testDir/v11/test_all_cache_patterns.c:151
+
+Rationale:
+Indirect pointer access benefits from blocking to keep pointers in cache during processing.
+
+Compiler Flags:
+-floop-block --param l1-cache-size=32 --param l2-cache-size=512
+
+Code Example:
+// Cache blocking for indirect access
+#define BLOCK_SIZE 64
+// Process in cache-sized blocks
+for (int block = 0; block < n; block += BLOCK_SIZE) {
+    int block_end = min(block + BLOCK_SIZE, n);
+    // First pass: prefetch
+    for (int i = block; i < block_end; i++) {
+        __builtin_prefetch(pointers[i], 0, 3);
+    }
+    // Second pass: process
+    for (int i = block; i < block_end; i++) {
+        sum += *pointers[i];
+    }
+}
+
+========================================
+
+Recommendation #32
+-----------------
+Type: CACHE_BLOCKING
+Priority: 3
+Expected Improvement: 30.0%
+Confidence: 70%
+Implementation Difficulty: 5/10
+Location: /home/codio/workspace/testDir/v11/test_all_cache_patterns.c:154
+
+Rationale:
+Indirect pointer access benefits from blocking to keep pointers in cache during processing.
+
+Compiler Flags:
+-floop-block --param l1-cache-size=32 --param l2-cache-size=512
+
+Code Example:
+// Cache blocking for indirect access
+#define BLOCK_SIZE 64
+// Process in cache-sized blocks
+for (int block = 0; block < n; block += BLOCK_SIZE) {
+    int block_end = min(block + BLOCK_SIZE, n);
+    // First pass: prefetch
+    for (int i = block; i < block_end; i++) {
+        __builtin_prefetch(pointers[i], 0, 3);
+    }
+    // Second pass: process
+    for (int i = block; i < block_end; i++) {
+        sum += *pointers[i];
+    }
+}
+
+========================================
+
+Recommendation #33
+-----------------
+Type: CACHE_BLOCKING
+Priority: 3
+Expected Improvement: 30.0%
+Confidence: 70%
+Implementation Difficulty: 5/10
+Location: /home/codio/workspace/testDir/v11/test_all_cache_patterns.c:166
+
+Rationale:
+Indirect pointer access benefits from blocking to keep pointers in cache during processing.
+
+Compiler Flags:
+-floop-block --param l1-cache-size=32 --param l2-cache-size=512
+
+Code Example:
+// Cache blocking for indirect access
+#define BLOCK_SIZE 64
+// Process in cache-sized blocks
+for (int block = 0; block < n; block += BLOCK_SIZE) {
+    int block_end = min(block + BLOCK_SIZE, n);
+    // First pass: prefetch
+    for (int i = block; i < block_end; i++) {
+        __builtin_prefetch(pointers[i], 0, 3);
+    }
+    // Second pass: process
+    for (int i = block; i < block_end; i++) {
+        sum += *pointers[i];
+    }
+}
+
+========================================
+
+Recommendation #34
+-----------------
+Type: CACHE_BLOCKING
+Priority: 3
+Expected Improvement: 30.0%
+Confidence: 70%
+Implementation Difficulty: 5/10
+Location: /home/codio/workspace/testDir/v11/test_all_cache_patterns.c:173
+
+Rationale:
+Indirect pointer access benefits from blocking to keep pointers in cache during processing.
+
+Compiler Flags:
+-floop-block --param l1-cache-size=32 --param l2-cache-size=512
+
+Code Example:
+// Cache blocking for indirect access
+#define BLOCK_SIZE 64
+// Process in cache-sized blocks
+for (int block = 0; block < n; block += BLOCK_SIZE) {
+    int block_end = min(block + BLOCK_SIZE, n);
+    // First pass: prefetch
+    for (int i = block; i < block_end; i++) {
+        __builtin_prefetch(pointers[i], 0, 3);
+    }
+    // Second pass: process
+    for (int i = block; i < block_end; i++) {
+        sum += *pointers[i];
+    }
+}
+
+========================================
+
+Recommendation #35
+-----------------
+Type: CACHE_BLOCKING
+Priority: 3
+Expected Improvement: 30.0%
+Confidence: 70%
+Implementation Difficulty: 5/10
+Location: /home/codio/workspace/testDir/v11/test_all_cache_patterns.c:178
+
+Rationale:
+Indirect pointer access benefits from blocking to keep pointers in cache during processing.
+
+Compiler Flags:
+-floop-block --param l1-cache-size=32 --param l2-cache-size=512
+
+Code Example:
+// Cache blocking for indirect access
+#define BLOCK_SIZE 64
+// Process in cache-sized blocks
+for (int block = 0; block < n; block += BLOCK_SIZE) {
+    int block_end = min(block + BLOCK_SIZE, n);
+    // First pass: prefetch
+    for (int i = block; i < block_end; i++) {
+        __builtin_prefetch(pointers[i], 0, 3);
+    }
+    // Second pass: process
+    for (int i = block; i < block_end; i++) {
+        sum += *pointers[i];
+    }
+}
+
+========================================
+
+Recommendation #36
+-----------------
+Type: DATA_LAYOUT_CHANGE
+Priority: 3
+Expected Improvement: 50.0%
+Confidence: 80%
+Implementation Difficulty: 7/10
+Location: /home/codio/workspace/testDir/v11/test_all_cache_patterns.c:199
+
+Rationale:
+Structure of Arrays (SoA) improves cache efficiency for scattered field access. Current layout wastes 25% of cache line transfers. SoA enables vectorization.
+
+Compiler Flags:
+-O3 -march=native -mtune=native
+
+Implementation Guide:
+1. Identify fields that are accessed together
+2. Group hot fields in separate arrays
+3. Allocate arrays with proper alignment
+4. Update all access patterns in code
+5. Consider SIMD opportunities with SoA layout
+
+Code Example:
+// Original Array of Structures (AoS)
+struct Particle {
+    double x, y, z;
+    double vx, vy, vz;
+    double mass;
+};
+Particle particles[N];
+
+// Transformed to Structure of Arrays (SoA)
+struct ParticleArray {
+    double *x, *y, *z;
+    double *vx, *vy, *vz;
+    double *mass;
+    size_t count;
+};
+
+// Access pattern changes from:
+// for (i = 0; i < N; i++) 
+//     particles[i].x += particles[i].vx * dt;
+// To:
+for (i = 0; i < N; i++)
+    particle_array.x[i] += particle_array.vx[i] * dt;
+
+========================================
+
+Recommendation #37
+-----------------
+Type: PREFETCH_HINTS
+Priority: 3
+Expected Improvement: 18.0%
+Confidence: 60%
+Implementation Difficulty: 7/10
+Location: /home/codio/workspace/testDir/v11/test_all_cache_patterns.c:199
+
+Rationale:
+Gather/scatter patterns can benefit from specialized prefetch instructions on modern CPUs.
+
+Compiler Flags:
+-fprefetch-loop-arrays -msse4.2
+
+Code Example:
+// Gather prefetch for indirect access
+#ifdef __AVX512PF__
+_mm512_prefetch_i32gather_pd(vindices, base_addr, 8, _MM_HINT_T0);
+#else
+// Manual gather prefetch
+for (int i = 0; i < n; i++) {
+    __builtin_prefetch(&data[indices[i+8]], 0, 1);
+    result[i] = data[indices[i]];
+}
+#endif
+
+========================================
+
+Recommendation #38
+-----------------
+Type: ACCESS_REORDER
+Priority: 3
+Expected Improvement: 15.0%
+Confidence: 50%
+Implementation Difficulty: 8/10
+Location: /home/codio/workspace/testDir/v11/test_all_cache_patterns.c:199
+
+Rationale:
+High severity pattern requires detailed profiling to identify the best optimization strategy.
+
+Compiler Flags:
+-floop-interchange -ftree-loop-distribution -ftree-loop-im
+
+Code Example:
+// Profile-guided optimization
+1. Compile with -fprofile-generate
+2. Run representative workload
+3. Recompile with -fprofile-use
+
+// Manual profiling
+#ifdef PROFILE
+uint64_t start = rdtsc();
+// Hot code here
+uint64_t cycles = rdtsc() - start;
+profile_record(cycles);
+#endif
+
+========================================
+
+Recommendation #39
+-----------------
+Type: CACHE_BLOCKING
+Priority: 3
+Expected Improvement: 30.0%
+Confidence: 70%
+Implementation Difficulty: 5/10
+Location: /home/codio/workspace/testDir/v11/test_all_cache_patterns.c:199
+
+Rationale:
+Indirect pointer access benefits from blocking to keep pointers in cache during processing.
+
+Compiler Flags:
+-floop-block --param l1-cache-size=32 --param l2-cache-size=512
+
+Code Example:
+// Cache blocking for indirect access
+#define BLOCK_SIZE 64
+// Process in cache-sized blocks
+for (int block = 0; block < n; block += BLOCK_SIZE) {
+    int block_end = min(block + BLOCK_SIZE, n);
+    // First pass: prefetch
+    for (int i = block; i < block_end; i++) {
+        __builtin_prefetch(pointers[i], 0, 3);
+    }
+    // Second pass: process
+    for (int i = block; i < block_end; i++) {
+        sum += *pointers[i];
+    }
+}
+
+========================================
+
+Recommendation #40
+-----------------
+Type: CACHE_BLOCKING
+Priority: 3
+Expected Improvement: 30.0%
+Confidence: 70%
+Implementation Difficulty: 5/10
+Location: /home/codio/workspace/testDir/v11/test_all_cache_patterns.c:212
+
+Rationale:
+Indirect pointer access benefits from blocking to keep pointers in cache during processing.
+
+Compiler Flags:
+-floop-block --param l1-cache-size=32 --param l2-cache-size=512
+
+Code Example:
+// Cache blocking for indirect access
+#define BLOCK_SIZE 64
+// Process in cache-sized blocks
+for (int block = 0; block < n; block += BLOCK_SIZE) {
+    int block_end = min(block + BLOCK_SIZE, n);
+    // First pass: prefetch
+    for (int i = block; i < block_end; i++) {
+        __builtin_prefetch(pointers[i], 0, 3);
+    }
+    // Second pass: process
+    for (int i = block; i < block_end; i++) {
+        sum += *pointers[i];
+    }
+}
+
+========================================
+

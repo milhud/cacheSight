@@ -1,0 +1,19 @@
+{
+    // This file is used to configure the three buttons along Codio's top menu.
+    
+    // Run button configuration
+    "commands": {
+        "Compile & Run": "gcc {{filename}} -o {{filename_no_ext}} && ./{{filename_no_ext}}",
+        "Compile": "gcc {{filename}} -o {{filename_no_ext}}",
+        "Run": "./{{filename_no_ext}}"
+    },
+    // Preview button configuration
+    "preview": {
+        "Project Index (static)": "https://{{domain}}/{{index}}",
+        "Current File (static)": "https://{{domain}}/{{filepath}}",
+        "Box URL": "http://{{domain3000}}/",
+        "Box URL SSL": "https://{{domain3000}}/"
+    },
+    // Debugger target button configuration
+    "debugger": [{"type":"GDB","command":"/tmp/program67e2dee2135748e7c1ba01f45b46ceda ","before":"gcc -std=c11 -g -lm {{filepath}} -o /tmp/program67e2dee2135748e7c1ba01f45b46ceda","single":true,"lang":"c","additionalCompilerFlags":"","sourcePath":"{{filepath}}","args":"","uuid":"4713985f-ec53-ca5c-71b4-b8615ec23995","name":"Debug Current File"}]
+}

@@ -590,7 +590,6 @@ int recommendation_engine_save_to_file(const optimization_rec_t *recs, int count
 }
 
 
-
 int recommendation_engine_analyze_all(recommendation_engine_t *engine,
                                      const classified_pattern_t *patterns,
                                      int pattern_count,
@@ -651,38 +650,25 @@ int recommendation_engine_analyze_all(recommendation_engine_t *engine,
     // Rank all recommendations together
     rank_recommendations(temp_recs, total_count);
     
-    // Copy to final array
+    // FIXED: Allocate final array and copy data BEFORE freeing temp_recs
     *all_recommendations = CALLOC_LOGGED(total_count, sizeof(optimization_rec_t));
     if (!*all_recommendations) {
         FREE_LOGGED(temp_recs);
         return -1;
     }
     
+    // Copy the recommendations to the final array
     memcpy(*all_recommendations, temp_recs, total_count * sizeof(optimization_rec_t));
     *total_rec_count = total_count;
     
+    // NOW free the temporary array after copying
     FREE_LOGGED(temp_recs);
     
-    LOG_INFO("Generated %d total recommendations after deduplication", total_count);
+    LOG_INFO("Generated %d total recommendations", total_count);
     
-    optimization_rec_t *deduped_recs;
-    int deduped_count;
-    
-    /*
-    if (deduplicate_by_scope(temp_recs, total_count, &deduped_recs, &deduped_count) == 0) {
-        free(temp_recs);  // Free the original array
-        *all_recommendations = deduped_recs;
-        *total_rec_count = deduped_count;
-    } else {
-        // Fallback if deduplication fails
-        *all_recommendations = temp_recs;
-        *total_rec_count = total_count;
-    }
-    */
-
-    *all_recommendations = temp_recs;
-    *total_rec_count = total_count;
-    printf("Skipping deduplication to avoid segfault - returning %d raw recommendations\n", total_count);
+    // REMOVED THE BUGGY CODE THAT WAS HERE:
+    // The commented-out deduplication code and the line that was setting
+    // *all_recommendations = temp_recs AFTER freeing it
     
     return 0;
 }

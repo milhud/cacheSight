@@ -1059,29 +1059,74 @@ int ast_analyzer_analyze_files(ast_analyzer_t *analyzer, const char **filenames,
                               int file_count, analysis_results_t *results) {
     memset(results, 0, sizeof(analysis_results_t));
     
-    // First pass: count total items
+    // Store file results with proper memory management
+    struct FileResultsHolder {
+        analysis_results_t results;
+        bool owns_memory;
+        
+        FileResultsHolder() : results{}, owns_memory(true) {}
+        
+        // Prevent copying which would cause double-free
+        FileResultsHolder(const FileResultsHolder&) = delete;
+        FileResultsHolder& operator=(const FileResultsHolder&) = delete;
+        
+        // Allow moving
+        FileResultsHolder(FileResultsHolder&& other) noexcept 
+            : results(other.results), owns_memory(other.owns_memory) {
+            other.owns_memory = false;
+            other.results = {};
+        }
+        
+        ~FileResultsHolder() {
+            // Don't free if ownership was transferred
+            if (!owns_memory) return;
+            
+            // Only free if we still own the memory
+            if (results.patterns) {
+                delete[] results.patterns;
+            }
+            if (results.loops) {
+                for (int i = 0; i < results.loop_count; i++) {
+                    if (results.loops[i].patterns) {
+                        delete[] results.loops[i].patterns;
+                    }
+                }
+                delete[] results.loops;
+            }
+            if (results.structs) {
+                delete[] results.structs;
+            }
+            if (results.diagnostics) {
+                delete[] results.diagnostics;
+            }
+        }
+    };
+    
+    // Use a vector that properly manages memory
+    std::vector<FileResultsHolder> file_results_vec;
+    file_results_vec.reserve(file_count);
+    
+    // First pass: analyze files and count total items
     int total_patterns = 0;
     int total_loops = 0;
     int total_structs = 0;
     
-    std::vector<analysis_results_t> file_results_vec;
-    
     for (int i = 0; i < file_count; i++) {
-        analysis_results_t file_results = {};
+        FileResultsHolder holder;
         
-        if (ast_analyzer_analyze_file(analyzer, filenames[i], &file_results) != 0) {
+        if (ast_analyzer_analyze_file(analyzer, filenames[i], &holder.results) != 0) {
             LOG_ERROR("Failed to analyze file: %s", filenames[i]);
             continue;
         }
         
-        total_patterns += file_results.pattern_count;
-        total_loops += file_results.loop_count;
-        total_structs += file_results.struct_count;
+        total_patterns += holder.results.pattern_count;
+        total_loops += holder.results.loop_count;
+        total_structs += holder.results.struct_count;
         
-        file_results_vec.push_back(file_results);
+        file_results_vec.push_back(std::move(holder));
     }
     
-    // Allocate arrays
+    // Allocate result arrays
     if (total_patterns > 0) {
         results->patterns = new static_pattern_t[total_patterns];
     }
@@ -1092,12 +1137,14 @@ int ast_analyzer_analyze_files(ast_analyzer_t *analyzer, const char **filenames,
         results->structs = new struct_info_t[total_structs];
     }
     
-    // Second pass: copy data
+    // Second pass: copy data (now the pointers are still valid)
     int pattern_offset = 0;
     int loop_offset = 0;
     int struct_offset = 0;
     
-    for (const auto& file_results : file_results_vec) {
+    for (auto& holder : file_results_vec) {
+        const auto& file_results = holder.results;
+        
         // Copy patterns
         if (file_results.patterns && file_results.pattern_count > 0) {
             std::copy(file_results.patterns, 
@@ -1106,12 +1153,21 @@ int ast_analyzer_analyze_files(ast_analyzer_t *analyzer, const char **filenames,
             pattern_offset += file_results.pattern_count;
         }
         
-        // Copy loops
+        // Copy loops with deep copy of nested patterns
         if (file_results.loops && file_results.loop_count > 0) {
-            std::copy(file_results.loops,
-                     file_results.loops + file_results.loop_count,
-                     results->loops + loop_offset);
-            loop_offset += file_results.loop_count;
+            for (int i = 0; i < file_results.loop_count; i++) {
+                results->loops[loop_offset] = file_results.loops[i];
+                
+                // Deep copy the patterns array if it exists
+                if (file_results.loops[i].patterns && file_results.loops[i].pattern_count > 0) {
+                    int pcount = file_results.loops[i].pattern_count;
+                    results->loops[loop_offset].patterns = new static_pattern_t[pcount];
+                    std::copy(file_results.loops[i].patterns,
+                             file_results.loops[i].patterns + pcount,
+                             results->loops[loop_offset].patterns);
+                }
+                loop_offset++;
+            }
         }
         
         // Copy structs
@@ -1121,48 +1177,60 @@ int ast_analyzer_analyze_files(ast_analyzer_t *analyzer, const char **filenames,
                      results->structs + struct_offset);
             struct_offset += file_results.struct_count;
         }
-        
-        // Free the file results
-        //ast_analyzer_free_results(const_cast<analysis_results_t*>(&file_results));
     }
     
     results->pattern_count = pattern_offset;
     results->loop_count = loop_offset;
     results->struct_count = struct_offset;
     
+    LOG_INFO("Analyzed %d files: %d patterns, %d loops, %d structs total",
+             file_count, results->pattern_count, results->loop_count, results->struct_count);
+    
     return 0;
 }
+
+// In ast_analyzer.cpp - Replace the entire ast_analyzer_free_results function:
 
 void ast_analyzer_free_results(analysis_results_t *results) {
     if (!results) return;
     
-    LOG_DEBUG("Freeing analysis results");
+    LOG_DEBUG("Freeing analysis results - patterns:%p loops:%p structs:%p", 
+              results->patterns, results->loops, results->structs);
     
+    // Free patterns array
     if (results->patterns) {
         delete[] results->patterns;
         results->patterns = nullptr;
     }
     
+    // Free loops array - MUST free nested patterns first!
     if (results->loops) {
+        // First free any nested pattern arrays in each loop
         for (int i = 0; i < results->loop_count; i++) {
             if (results->loops[i].patterns) {
+                LOG_DEBUG("Freeing loop[%d] patterns array", i);
                 delete[] results->loops[i].patterns;
+                results->loops[i].patterns = nullptr;  // Clear pointer
             }
         }
+        // Then free the loops array itself
         delete[] results->loops;
         results->loops = nullptr;
     }
     
+    // Free structs array
     if (results->structs) {
         delete[] results->structs;
         results->structs = nullptr;
     }
     
+    // Free diagnostics
     if (results->diagnostics) {
         delete[] results->diagnostics;
         results->diagnostics = nullptr;
     }
     
+    // Clear counts
     results->pattern_count = 0;
     results->loop_count = 0;
     results->struct_count = 0;

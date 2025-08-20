@@ -547,30 +547,48 @@ static int run_analysis(const analysis_config_t *config) {
     }
     
     cleanup:
-        // Free allocated memory
-        if (static_results.patterns) {
-            ast_analyzer_free_results(&static_results);
-            // Clear the pointers after freeing to prevent double-free
-            static_results.patterns = NULL;
-            static_results.loops = NULL;
-            static_results.structs = NULL;
-        }
-        if (samples) {
-            perf_sampler_free_samples(samples);
-        }
-        if (hotspots) {
-            sample_collector_free_hotspots(hotspots, hotspot_count);
-        }
-        if (patterns) {
-            free(patterns);
-        }
-        if (recommendations) {
-            free(recommendations);
-        }
-        
-        hardware_detector_cleanup();
-        
-        return ret;
+	    // Free allocated memory - order matters to prevent double-free!
+	    
+	    // Free AST analyzer results first
+	    if (static_results.patterns || static_results.loops || static_results.structs) {
+		LOG_DEBUG("Freeing static analysis results");
+		ast_analyzer_free_results(&static_results);
+		// These are already set to nullptr in ast_analyzer_free_results
+	    }
+	    
+	    // Free samples
+	    if (samples) {
+		LOG_DEBUG("Freeing samples");
+		perf_sampler_free_samples(samples);
+		samples = NULL;
+	    }
+	    
+	    // Free hotspots - this has its own deep cleanup
+	    if (hotspots) {
+		LOG_DEBUG("Freeing %d hotspots", hotspot_count);
+		sample_collector_free_hotspots(hotspots, hotspot_count);
+		hotspots = NULL;
+	    }
+	    
+	    // Free patterns array (but not the pattern objects they point to)
+	    if (patterns) {
+		LOG_DEBUG("Freeing patterns array");
+		free(patterns);
+		patterns = NULL;
+	    }
+	    
+	    // Free recommendations array
+	    if (recommendations) {
+		LOG_DEBUG("Freeing recommendations array");
+		free(recommendations);
+		recommendations = NULL;
+	    }
+	    
+	    // Cleanup hardware detector
+	    hardware_detector_cleanup();
+	    
+	    LOG_DEBUG("Cleanup complete");
+	    return ret;
 }
 
 int main(int argc, char *argv[]) {

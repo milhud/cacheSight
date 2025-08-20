@@ -1,0 +1,400 @@
+[2025-08-20 04:00:26.343] [INFO] [common.c:48:logger_init] Logger initialized - Console Level: INFO, File Level: DEBUG, Log File: cache_optimizer.log
+[2025-08-20 04:00:26.343] [INFO] [main.c:745:main] Cache Optimizer Tool starting
+[2025-08-20 04:00:26.343] [INFO] [main.c:748:main] Mode: full, Duration: 10.0s, Samples: 100000, Threshold: 1.0%
+[2025-08-20 04:00:26.343] [INFO] [main.c:273:run_analysis] Initializing cache optimizer subsystems
+[2025-08-20 04:00:26.343] [INFO] [hardware_detector.c:226:hardware_detector_init] Initializing hardware detector
+[2025-08-20 04:00:26.343] [INFO] [hardware_detector.c:248:detect_cache_hierarchy] Starting cache hierarchy detection
+[2025-08-20 04:00:26.343] [INFO] [hardware_detector.c:255:detect_cache_hierarchy] Architecture: x86_64
+[2025-08-20 04:00:26.343] [INFO] [hardware_detector.c:57:parse_cache_from_sys] Parsing cache information from /sys/devices/system/cpu/
+[2025-08-20 04:00:26.344] [DEBUG] [hardware_detector.c:79:parse_cache_from_sys] Cache index 0 is level 1
+[2025-08-20 04:00:26.345] [DEBUG] [hardware_detector.c:97:parse_cache_from_sys] Cache size: 32768 bytes
+[2025-08-20 04:00:26.345] [DEBUG] [hardware_detector.c:108:parse_cache_from_sys] Cache line size: 64 bytes
+[2025-08-20 04:00:26.346] [DEBUG] [hardware_detector.c:116:parse_cache_from_sys] Cache associativity: 8-way
+[2025-08-20 04:00:26.346] [DEBUG] [hardware_detector.c:124:parse_cache_from_sys] Cache sets: 64
+[2025-08-20 04:00:26.346] [DEBUG] [hardware_detector.c:130:parse_cache_from_sys] Cache type: Data
+[2025-08-20 04:00:26.347] [DEBUG] [hardware_detector.c:143:parse_cache_from_sys] Cache shared across 2 CPUs
+[2025-08-20 04:00:26.347] [INFO] [hardware_detector.c:159:parse_cache_from_sys] Detected L1 cache: 32 KB, 64 B line, 8-way associative
+[2025-08-20 04:00:26.348] [DEBUG] [hardware_detector.c:79:parse_cache_from_sys] Cache index 1 is level 1
+[2025-08-20 04:00:26.348] [DEBUG] [hardware_detector.c:97:parse_cache_from_sys] Cache size: 65536 bytes
+[2025-08-20 04:00:26.348] [DEBUG] [hardware_detector.c:108:parse_cache_from_sys] Cache line size: 64 bytes
+[2025-08-20 04:00:26.349] [DEBUG] [hardware_detector.c:116:parse_cache_from_sys] Cache associativity: 4-way
+[2025-08-20 04:00:26.349] [DEBUG] [hardware_detector.c:124:parse_cache_from_sys] Cache sets: 256
+[2025-08-20 04:00:26.350] [DEBUG] [hardware_detector.c:130:parse_cache_from_sys] Cache type: Instruction
+[2025-08-20 04:00:26.350] [DEBUG] [hardware_detector.c:143:parse_cache_from_sys] Cache shared across 2 CPUs
+[2025-08-20 04:00:26.350] [INFO] [hardware_detector.c:159:parse_cache_from_sys] Detected L1 cache: 64 KB, 64 B line, 4-way associative
+[2025-08-20 04:00:26.351] [DEBUG] [hardware_detector.c:79:parse_cache_from_sys] Cache index 2 is level 2
+[2025-08-20 04:00:26.351] [DEBUG] [hardware_detector.c:97:parse_cache_from_sys] Cache size: 524288 bytes
+[2025-08-20 04:00:26.352] [DEBUG] [hardware_detector.c:108:parse_cache_from_sys] Cache line size: 64 bytes
+[2025-08-20 04:00:26.352] [DEBUG] [hardware_detector.c:116:parse_cache_from_sys] Cache associativity: 8-way
+[2025-08-20 04:00:26.353] [DEBUG] [hardware_detector.c:124:parse_cache_from_sys] Cache sets: 1024
+[2025-08-20 04:00:26.353] [DEBUG] [hardware_detector.c:130:parse_cache_from_sys] Cache type: Unified
+[2025-08-20 04:00:26.353] [DEBUG] [hardware_detector.c:143:parse_cache_from_sys] Cache shared across 2 CPUs
+[2025-08-20 04:00:26.353] [INFO] [hardware_detector.c:159:parse_cache_from_sys] Detected L2 cache: 512 KB, 64 B line, 8-way associative
+[2025-08-20 04:00:26.354] [DEBUG] [hardware_detector.c:79:parse_cache_from_sys] Cache index 3 is level 3
+[2025-08-20 04:00:26.355] [DEBUG] [hardware_detector.c:97:parse_cache_from_sys] Cache size: 8388608 bytes
+[2025-08-20 04:00:26.355] [DEBUG] [hardware_detector.c:108:parse_cache_from_sys] Cache line size: 64 bytes
+[2025-08-20 04:00:26.356] [DEBUG] [hardware_detector.c:116:parse_cache_from_sys] Cache associativity: 16-way
+[2025-08-20 04:00:26.356] [DEBUG] [hardware_detector.c:124:parse_cache_from_sys] Cache sets: 8192
+[2025-08-20 04:00:26.356] [DEBUG] [hardware_detector.c:130:parse_cache_from_sys] Cache type: Unified
+[2025-08-20 04:00:26.357] [DEBUG] [hardware_detector.c:143:parse_cache_from_sys] Cache shared across 2 CPUs
+[2025-08-20 04:00:26.357] [INFO] [hardware_detector.c:159:parse_cache_from_sys] Detected L3 cache: 8192 KB, 64 B line, 16-way associative
+[2025-08-20 04:00:26.357] [DEBUG] [hardware_detector.c:68:parse_cache_from_sys] Cache index 4 does not exist
+[2025-08-20 04:00:26.357] [INFO] [hardware_detector.c:163:parse_cache_from_sys] Total cache levels detected: 4
+[2025-08-20 04:00:26.357] [INFO] [hardware_detector.c:169:parse_cpu_info] Parsing CPU information from /proc/cpuinfo
+[2025-08-20 04:00:26.361] [DEBUG] [hardware_detector.c:193:parse_cpu_info] CPU Model: AMD EPYC 7571
+[2025-08-20 04:00:26.361] [DEBUG] [hardware_detector.c:203:parse_cpu_info] CPU Frequency: 2.54 GHz
+[2025-08-20 04:00:26.361] [DEBUG] [hardware_detector.c:203:parse_cpu_info] CPU Frequency: 2.50 GHz
+[2025-08-20 04:00:26.361] [DEBUG] [hardware_detector.c:203:parse_cpu_info] CPU Frequency: 2.56 GHz
+[2025-08-20 04:00:26.361] [DEBUG] [hardware_detector.c:203:parse_cpu_info] CPU Frequency: 2.53 GHz
+[2025-08-20 04:00:26.361] [DEBUG] [hardware_detector.c:203:parse_cpu_info] CPU Frequency: 2.54 GHz
+[2025-08-20 04:00:26.361] [DEBUG] [hardware_detector.c:203:parse_cpu_info] CPU Frequency: 2.52 GHz
+[2025-08-20 04:00:26.361] [DEBUG] [hardware_detector.c:203:parse_cpu_info] CPU Frequency: 2.55 GHz
+[2025-08-20 04:00:26.361] [DEBUG] [hardware_detector.c:203:parse_cpu_info] CPU Frequency: 2.54 GHz
+[2025-08-20 04:00:26.361] [INFO] [hardware_detector.c:215:parse_cpu_info] Detected 4 physical cores, 8 logical cores
+[2025-08-20 04:00:26.361] [INFO] [hardware_detector.c:279:detect_cache_hierarchy] Total memory: 30.82 GB
+[2025-08-20 04:00:26.361] [INFO] [hardware_detector.c:284:detect_cache_hierarchy] Page size: 4096 bytes
+[2025-08-20 04:00:26.361] [INFO] [hardware_detector.c:288:detect_cache_hierarchy] NUMA nodes: 1
+[2025-08-20 04:00:26.362] [INFO] [hardware_detector.c:297:detect_cache_hierarchy] Estimated memory bandwidth: 25 GB/s
+[2025-08-20 04:00:26.362] [INFO] [hardware_detector.c:299:detect_cache_hierarchy] Cache hierarchy detection complete
+[2025-08-20 04:00:26.362] [INFO] [hardware_detector.c:343:save_cache_info_to_file] Saving cache information to cache_info.txt
+[2025-08-20 04:00:26.362] [INFO] [hardware_detector.c:383:save_cache_info_to_file] Cache information saved successfully
+[2025-08-20 04:00:26.362] [INFO] [main.c:94:run_static_analysis] Starting static analysis on 1 files
+[2025-08-20 04:00:26.362] [INFO] [ast_analyzer.cpp:954:ast_analyzer] Created AST analyzer
+[2025-08-20 04:00:26.362] [DEBUG] [ast_analyzer.cpp:992:ast_analyzer_set_std] Set C standard: c11
+[2025-08-20 04:00:26.362] [INFO] [ast_analyzer.cpp:1000:ast_analyzer_analyze_file] Analyzing file: test1_bad_matrix.c
+[2025-08-20 04:00:26.368] [INFO] [ast_analyzer.cpp:850:CreateASTConsumer] Creating AST consumer for file: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c
+[2025-08-20 04:00:26.368] [DEBUG] [ast_analyzer.cpp:54:CachePatternVisitor] Created CachePatternVisitor
+[2025-08-20 04:00:26.368] [DEBUG] [ast_analyzer.cpp:830:CacheAnalysisConsumer] Created CacheAnalysisConsumer
+[2025-08-20 04:00:26.378] [INFO] [ast_analyzer.cpp:834:HandleTranslationUnit] Analyzing translation unit
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:197:VisitForStmt] Found for loop at /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:9 - depth: 1
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:197:VisitForStmt] Found for loop at /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:10 - depth: 2
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:197:VisitForStmt] Found for loop at /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:12 - depth: 3
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:487:analyzeArrayAccess] === PATTERN ANALYSIS RESULT ===
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:488:analyzeArrayAccess] Location: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:13
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:489:analyzeArrayAccess] Array: A[k]
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:491:analyzeArrayAccess] Pattern: STRIDED (stride: 1452622410)
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:492:analyzeArrayAccess] Loop variable: k, Loop depth: 3
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:495:analyzeArrayAccess] Is pointer: no, Is indirect: no
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:496:analyzeArrayAccess] === END ANALYSIS ===
+
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:171:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:13 - pattern: STRIDED
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:487:analyzeArrayAccess] === PATTERN ANALYSIS RESULT ===
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:488:analyzeArrayAccess] Location: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:13
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:489:analyzeArrayAccess] Array: A[i]
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:491:analyzeArrayAccess] Pattern: SEQUENTIAL (stride: 0)
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:492:analyzeArrayAccess] Loop variable: k, Loop depth: 3
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:495:analyzeArrayAccess] Is pointer: yes, Is indirect: no
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:496:analyzeArrayAccess] === END ANALYSIS ===
+
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:171:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:13 - pattern: SEQUENTIAL
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:487:analyzeArrayAccess] === PATTERN ANALYSIS RESULT ===
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:488:analyzeArrayAccess] Location: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:13
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:489:analyzeArrayAccess] Array: B[j]
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:491:analyzeArrayAccess] Pattern: NESTED_LOOP (stride: 1024)
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:492:analyzeArrayAccess] Loop variable: k, Loop depth: 3
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:495:analyzeArrayAccess] Is pointer: no, Is indirect: no
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:496:analyzeArrayAccess] === END ANALYSIS ===
+
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:171:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:13 - pattern: NESTED_LOOP
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:487:analyzeArrayAccess] === PATTERN ANALYSIS RESULT ===
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:488:analyzeArrayAccess] Location: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:13
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:489:analyzeArrayAccess] Array: B[k]
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:491:analyzeArrayAccess] Pattern: STRIDED (stride: 1452622410)
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:492:analyzeArrayAccess] Loop variable: k, Loop depth: 3
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:495:analyzeArrayAccess] Is pointer: yes, Is indirect: no
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:496:analyzeArrayAccess] === END ANALYSIS ===
+
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:171:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:13 - pattern: STRIDED
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:487:analyzeArrayAccess] === PATTERN ANALYSIS RESULT ===
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:488:analyzeArrayAccess] Location: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:15
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:489:analyzeArrayAccess] Array: C[j]
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:491:analyzeArrayAccess] Pattern: SEQUENTIAL (stride: 1)
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:492:analyzeArrayAccess] Loop variable: j, Loop depth: 2
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:495:analyzeArrayAccess] Is pointer: no, Is indirect: no
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:496:analyzeArrayAccess] === END ANALYSIS ===
+
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:171:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:15 - pattern: SEQUENTIAL
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:487:analyzeArrayAccess] === PATTERN ANALYSIS RESULT ===
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:488:analyzeArrayAccess] Location: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:15
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:489:analyzeArrayAccess] Array: C[i]
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:491:analyzeArrayAccess] Pattern: SEQUENTIAL (stride: 0)
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:492:analyzeArrayAccess] Loop variable: j, Loop depth: 2
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:495:analyzeArrayAccess] Is pointer: yes, Is indirect: no
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:496:analyzeArrayAccess] === END ANALYSIS ===
+
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:171:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:15 - pattern: SEQUENTIAL
+[2025-08-20 04:00:26.379] [DEBUG] [ast_analyzer.cpp:197:VisitForStmt] Found for loop at /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:24 - depth: 1
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:197:VisitForStmt] Found for loop at /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:25 - depth: 2
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:487:analyzeArrayAccess] === PATTERN ANALYSIS RESULT ===
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:488:analyzeArrayAccess] Location: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:26
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:489:analyzeArrayAccess] Array: A[j]
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:491:analyzeArrayAccess] Pattern: SEQUENTIAL (stride: 1)
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:492:analyzeArrayAccess] Loop variable: j, Loop depth: 2
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:495:analyzeArrayAccess] Is pointer: no, Is indirect: no
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:496:analyzeArrayAccess] === END ANALYSIS ===
+
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:171:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:26 - pattern: SEQUENTIAL
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:487:analyzeArrayAccess] === PATTERN ANALYSIS RESULT ===
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:488:analyzeArrayAccess] Location: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:26
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:489:analyzeArrayAccess] Array: A[i]
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:491:analyzeArrayAccess] Pattern: SEQUENTIAL (stride: 0)
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:492:analyzeArrayAccess] Loop variable: j, Loop depth: 2
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:495:analyzeArrayAccess] Is pointer: no, Is indirect: no
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:496:analyzeArrayAccess] === END ANALYSIS ===
+
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:171:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:26 - pattern: SEQUENTIAL
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:487:analyzeArrayAccess] === PATTERN ANALYSIS RESULT ===
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:488:analyzeArrayAccess] Location: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:27
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:489:analyzeArrayAccess] Array: B[j]
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:491:analyzeArrayAccess] Pattern: SEQUENTIAL (stride: 1)
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:492:analyzeArrayAccess] Loop variable: j, Loop depth: 2
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:495:analyzeArrayAccess] Is pointer: no, Is indirect: no
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:496:analyzeArrayAccess] === END ANALYSIS ===
+
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:171:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:27 - pattern: SEQUENTIAL
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:487:analyzeArrayAccess] === PATTERN ANALYSIS RESULT ===
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:488:analyzeArrayAccess] Location: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:27
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:489:analyzeArrayAccess] Array: B[i]
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:491:analyzeArrayAccess] Pattern: SEQUENTIAL (stride: 0)
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:492:analyzeArrayAccess] Loop variable: j, Loop depth: 2
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:495:analyzeArrayAccess] Is pointer: no, Is indirect: no
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:496:analyzeArrayAccess] === END ANALYSIS ===
+
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:171:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:27 - pattern: SEQUENTIAL
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:487:analyzeArrayAccess] === PATTERN ANALYSIS RESULT ===
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:488:analyzeArrayAccess] Location: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:33
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:489:analyzeArrayAccess] Array: C[]
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:491:analyzeArrayAccess] Pattern: RANDOM (stride: 0)
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:492:analyzeArrayAccess] Loop variable: , Loop depth: 0
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:495:analyzeArrayAccess] Is pointer: no, Is indirect: no
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:496:analyzeArrayAccess] === END ANALYSIS ===
+
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:171:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:33 - pattern: RANDOM
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:487:analyzeArrayAccess] === PATTERN ANALYSIS RESULT ===
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:488:analyzeArrayAccess] Location: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:33
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:489:analyzeArrayAccess] Array: C[]
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:491:analyzeArrayAccess] Pattern: RANDOM (stride: 0)
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:492:analyzeArrayAccess] Loop variable: , Loop depth: 0
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:495:analyzeArrayAccess] Is pointer: no, Is indirect: no
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:496:analyzeArrayAccess] === END ANALYSIS ===
+
+[2025-08-20 04:00:26.380] [DEBUG] [ast_analyzer.cpp:171:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:33 - pattern: RANDOM
+[2025-08-20 04:00:26.381] [INFO] [ast_analyzer.cpp:1053:ast_analyzer_analyze_file] Analysis complete: 15 patterns, 5 loops, 0 structs found
+[2025-08-20 04:00:26.381] [INFO] [ast_analyzer.cpp:1187:ast_analyzer_analyze_files] Analyzed 1 files: 15 patterns, 5 loops, 0 structs total
+[2025-08-20 04:00:26.381] [INFO] [main.c:128:run_static_analysis] Static analysis complete: 15 patterns, 5 loops, 0 structs
+[2025-08-20 04:00:26.381] [INFO] [main.c:133:run_static_analysis] Static analysis complete: 15 patterns, 5 loops, 0 structs
+[2025-08-20 04:00:26.381] [DEBUG] [main.c:137:run_static_analysis] === DUMPING ALL STATIC PATTERNS ===
+[2025-08-20 04:00:26.381] [DEBUG] [main.c:144:run_static_analysis] Pattern 0: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:13 - STRIDED (array: A, var: k, stride: 1452622410, pointer: NO)
+[2025-08-20 04:00:26.381] [DEBUG] [main.c:144:run_static_analysis] Pattern 1: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:13 - SEQUENTIAL (array: A, var: i, stride: 0, pointer: YES)
+[2025-08-20 04:00:26.381] [DEBUG] [main.c:144:run_static_analysis] Pattern 2: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:13 - NESTED_LOOP (array: B, var: j, stride: 1024, pointer: NO)
+[2025-08-20 04:00:26.381] [DEBUG] [main.c:144:run_static_analysis] Pattern 3: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:13 - STRIDED (array: B, var: k, stride: 1452622410, pointer: YES)
+[2025-08-20 04:00:26.381] [DEBUG] [main.c:144:run_static_analysis] Pattern 4: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:13 - STRIDED (array: MatrixLoop_13, var: k, stride: 1452622410, pointer: NO)
+[2025-08-20 04:00:26.381] [DEBUG] [main.c:144:run_static_analysis] Pattern 5: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:15 - SEQUENTIAL (array: C, var: j, stride: 1, pointer: NO)
+[2025-08-20 04:00:26.381] [DEBUG] [main.c:144:run_static_analysis] Pattern 6: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:15 - SEQUENTIAL (array: C, var: i, stride: 0, pointer: YES)
+[2025-08-20 04:00:26.381] [DEBUG] [main.c:144:run_static_analysis] Pattern 7: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:15 - SEQUENTIAL (array: C, var: j, stride: 1, pointer: NO)
+[2025-08-20 04:00:26.381] [DEBUG] [main.c:144:run_static_analysis] Pattern 8: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:26 - SEQUENTIAL (array: A, var: j, stride: 1, pointer: NO)
+[2025-08-20 04:00:26.381] [DEBUG] [main.c:144:run_static_analysis] Pattern 9: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:26 - SEQUENTIAL (array: A, var: i, stride: 0, pointer: NO)
+[2025-08-20 04:00:26.381] [DEBUG] [main.c:144:run_static_analysis] Pattern 10: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:27 - SEQUENTIAL (array: B, var: j, stride: 1, pointer: NO)
+[2025-08-20 04:00:26.381] [DEBUG] [main.c:144:run_static_analysis] Pattern 11: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:27 - SEQUENTIAL (array: B, var: i, stride: 0, pointer: NO)
+[2025-08-20 04:00:26.381] [DEBUG] [main.c:144:run_static_analysis] Pattern 12: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:26 - SEQUENTIAL (array: A, var: j, stride: 1, pointer: NO)
+[2025-08-20 04:00:26.381] [DEBUG] [main.c:144:run_static_analysis] Pattern 13: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:33 - RANDOM (array: C, var: , stride: 0, pointer: NO)
+[2025-08-20 04:00:26.381] [DEBUG] [main.c:144:run_static_analysis] Pattern 14: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:33 - RANDOM (array: C, var: , stride: 0, pointer: NO)
+[2025-08-20 04:00:26.381] [DEBUG] [main.c:146:run_static_analysis] === END PATTERN DUMP ===
+
+[2025-08-20 04:00:26.381] [INFO] [ast_analyzer.cpp:967:ast_analyzer_destroy] Destroying AST analyzer
+[2025-08-20 04:00:26.381] [INFO] [main.c:156:run_dynamic_profiling] Starting dynamic profiling for 10.0 seconds
+[2025-08-20 04:00:26.381] [INFO] [perf_sampler.c:487:perf_check_permissions] perf_event_paranoid level: 4
+[2025-08-20 04:00:26.381] [WARNING] [perf_sampler.c:492:perf_check_permissions] perf_event_paranoid=4 may restrict profiling. Consider: sudo sysctl kernel.perf_event_paranoid=1
+[2025-08-20 04:00:26.381] [DEBUG] [perf_sampler.c:466:perf_config_default] Created default perf configuration
+[2025-08-20 04:00:26.382] [INFO] [perf_sampler.c:48:init_libpfm] libpfm4 initialized successfully
+[2025-08-20 04:00:26.382] [DEBUG] [common.c:222:calloc_logged] Memory allocated (calloc): 160.00 B at 0x6285bac9fd40 [perf_sampler.c:188:perf_sampler_create]
+[2025-08-20 04:00:26.382] [DEBUG] [common.c:222:calloc_logged] Memory allocated (calloc): 42.72 MB at 0x740539557010 [perf_sampler.c:199:perf_sampler_create]
+[2025-08-20 04:00:26.382] [INFO] [perf_sampler.c:206:perf_sampler_create] Created perf sampler with capacity for 100000 samples
+[2025-08-20 04:00:26.382] [DEBUG] [common.c:222:calloc_logged] Memory allocated (calloc): 4.00 B at 0x6285bac9a6a0 [perf_sampler.c:211:perf_sampler_create]
+[2025-08-20 04:00:26.382] [DEBUG] [common.c:222:calloc_logged] Memory allocated (calloc): 8.00 B at 0x6285bad051c0 [perf_sampler.c:212:perf_sampler_create]
+[2025-08-20 04:00:26.382] [ERROR] [perf_sampler.c:251:perf_sampler_create] Failed to create perf event for CPU 0: Permission denied
+[2025-08-20 04:00:26.382] [ERROR] [perf_sampler.c:284:perf_sampler_create] Failed to create any perf events
+[2025-08-20 04:00:26.382] [INFO] [perf_sampler.c:297:perf_sampler_destroy] Destroying perf sampler
+[2025-08-20 04:00:26.382] [DEBUG] [common.c:231:free_logged] Memory freed: 0x6285bac9a6a0 [perf_sampler.c:314:perf_sampler_destroy]
+[2025-08-20 04:00:26.382] [DEBUG] [common.c:231:free_logged] Memory freed: 0x6285bad051c0 [perf_sampler.c:318:perf_sampler_destroy]
+[2025-08-20 04:00:26.382] [DEBUG] [common.c:231:free_logged] Memory freed: 0x740539557010 [perf_sampler.c:322:perf_sampler_destroy]
+[2025-08-20 04:00:26.382] [DEBUG] [common.c:231:free_logged] Memory freed: 0x6285bac9fd40 [perf_sampler.c:326:perf_sampler_destroy]
+[2025-08-20 04:00:26.382] [ERROR] [main.c:171:run_dynamic_profiling] Failed to create perf sampler
+[2025-08-20 04:00:26.382] [INFO] [main.c:370:run_analysis] No dynamic profiling data - generating patterns from static analysis
+[2025-08-20 04:00:26.382] [DEBUG] [common.c:222:calloc_logged] Memory allocated (calloc): 7.27 KB at 0x6285bacaea30 [main.c:373:run_analysis]
+[2025-08-20 04:00:26.382] [DEBUG] [common.c:222:calloc_logged] Memory allocated (calloc): 15.70 KB at 0x6285bad3a5b0 [main.c:374:run_analysis]
+[2025-08-20 04:00:26.382] [DEBUG] [pattern_classifier.c:612:calculate_performance_impact] Calculated performance impact: 66.7% for STREAMING_EVICTION pattern
+[2025-08-20 04:00:26.382] [DEBUG] [pattern_classifier.c:612:calculate_performance_impact] Calculated performance impact: 33.3% for HOTSPOT_REUSE pattern
+[2025-08-20 04:00:26.382] [DEBUG] [pattern_classifier.c:612:calculate_performance_impact] Calculated performance impact: 90.0% for THRASHING pattern
+[2025-08-20 04:00:26.382] [DEBUG] [pattern_classifier.c:612:calculate_performance_impact] Calculated performance impact: 66.7% for STREAMING_EVICTION pattern
+[2025-08-20 04:00:26.382] [DEBUG] [pattern_classifier.c:612:calculate_performance_impact] Calculated performance impact: 66.7% for STREAMING_EVICTION pattern
+[2025-08-20 04:00:26.382] [DEBUG] [pattern_classifier.c:612:calculate_performance_impact] Calculated performance impact: 33.3% for HOTSPOT_REUSE pattern
+[2025-08-20 04:00:26.382] [DEBUG] [pattern_classifier.c:612:calculate_performance_impact] Calculated performance impact: 33.3% for HOTSPOT_REUSE pattern
+[2025-08-20 04:00:26.382] [DEBUG] [pattern_classifier.c:612:calculate_performance_impact] Calculated performance impact: 33.3% for HOTSPOT_REUSE pattern
+[2025-08-20 04:00:26.382] [DEBUG] [pattern_classifier.c:612:calculate_performance_impact] Calculated performance impact: 33.3% for HOTSPOT_REUSE pattern
+[2025-08-20 04:00:26.382] [DEBUG] [pattern_classifier.c:612:calculate_performance_impact] Calculated performance impact: 33.3% for HOTSPOT_REUSE pattern
+[2025-08-20 04:00:26.383] [DEBUG] [pattern_classifier.c:612:calculate_performance_impact] Calculated performance impact: 33.3% for HOTSPOT_REUSE pattern
+[2025-08-20 04:00:26.383] [DEBUG] [pattern_classifier.c:612:calculate_performance_impact] Calculated performance impact: 33.3% for HOTSPOT_REUSE pattern
+[2025-08-20 04:00:26.383] [DEBUG] [pattern_classifier.c:612:calculate_performance_impact] Calculated performance impact: 33.3% for HOTSPOT_REUSE pattern
+[2025-08-20 04:00:26.383] [DEBUG] [pattern_classifier.c:612:calculate_performance_impact] Calculated performance impact: 90.0% for IRREGULAR_GATHER_SCATTER pattern
+[2025-08-20 04:00:26.383] [DEBUG] [pattern_classifier.c:612:calculate_performance_impact] Calculated performance impact: 90.0% for IRREGULAR_GATHER_SCATTER pattern
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:464:run_analysis] === CONVERTING STATIC TO CLASSIFIED PATTERNS ===
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:465:run_analysis] === CONVERTING STATIC TO CLASSIFIED PATTERNS ===
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:470:run_analysis] Converting pattern 0: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:13
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:472:run_analysis]   Static pattern type: STRIDED (enum: 1)
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:477:run_analysis]   Hotspot dominant_pattern set to: STRIDED (enum: 1)
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:481:run_analysis]   Classified as: STREAMING_EVICTION
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:470:run_analysis] Converting pattern 1: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:13
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:472:run_analysis]   Static pattern type: SEQUENTIAL (enum: 0)
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:477:run_analysis]   Hotspot dominant_pattern set to: SEQUENTIAL (enum: 0)
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:481:run_analysis]   Classified as: HOTSPOT_REUSE
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:470:run_analysis] Converting pattern 2: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:13
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:472:run_analysis]   Static pattern type: NESTED_LOOP (enum: 5)
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:477:run_analysis]   Hotspot dominant_pattern set to: NESTED_LOOP (enum: 5)
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:481:run_analysis]   Classified as: THRASHING
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:470:run_analysis] Converting pattern 3: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:13
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:472:run_analysis]   Static pattern type: STRIDED (enum: 1)
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:477:run_analysis]   Hotspot dominant_pattern set to: STRIDED (enum: 1)
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:481:run_analysis]   Classified as: STREAMING_EVICTION
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:470:run_analysis] Converting pattern 4: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:13
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:472:run_analysis]   Static pattern type: STRIDED (enum: 1)
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:477:run_analysis]   Hotspot dominant_pattern set to: STRIDED (enum: 1)
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:481:run_analysis]   Classified as: STREAMING_EVICTION
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:470:run_analysis] Converting pattern 5: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:15
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:472:run_analysis]   Static pattern type: SEQUENTIAL (enum: 0)
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:477:run_analysis]   Hotspot dominant_pattern set to: SEQUENTIAL (enum: 0)
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:481:run_analysis]   Classified as: HOTSPOT_REUSE
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:470:run_analysis] Converting pattern 6: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:15
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:472:run_analysis]   Static pattern type: SEQUENTIAL (enum: 0)
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:477:run_analysis]   Hotspot dominant_pattern set to: SEQUENTIAL (enum: 0)
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:481:run_analysis]   Classified as: HOTSPOT_REUSE
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:470:run_analysis] Converting pattern 7: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:15
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:472:run_analysis]   Static pattern type: SEQUENTIAL (enum: 0)
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:477:run_analysis]   Hotspot dominant_pattern set to: SEQUENTIAL (enum: 0)
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:481:run_analysis]   Classified as: HOTSPOT_REUSE
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:470:run_analysis] Converting pattern 8: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:26
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:472:run_analysis]   Static pattern type: SEQUENTIAL (enum: 0)
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:477:run_analysis]   Hotspot dominant_pattern set to: SEQUENTIAL (enum: 0)
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:481:run_analysis]   Classified as: HOTSPOT_REUSE
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:470:run_analysis] Converting pattern 9: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:26
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:472:run_analysis]   Static pattern type: SEQUENTIAL (enum: 0)
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:477:run_analysis]   Hotspot dominant_pattern set to: SEQUENTIAL (enum: 0)
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:481:run_analysis]   Classified as: HOTSPOT_REUSE
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:470:run_analysis] Converting pattern 10: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:27
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:472:run_analysis]   Static pattern type: SEQUENTIAL (enum: 0)
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:477:run_analysis]   Hotspot dominant_pattern set to: SEQUENTIAL (enum: 0)
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:481:run_analysis]   Classified as: HOTSPOT_REUSE
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:470:run_analysis] Converting pattern 11: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:27
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:472:run_analysis]   Static pattern type: SEQUENTIAL (enum: 0)
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:477:run_analysis]   Hotspot dominant_pattern set to: SEQUENTIAL (enum: 0)
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:481:run_analysis]   Classified as: HOTSPOT_REUSE
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:470:run_analysis] Converting pattern 12: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:26
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:472:run_analysis]   Static pattern type: SEQUENTIAL (enum: 0)
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:477:run_analysis]   Hotspot dominant_pattern set to: SEQUENTIAL (enum: 0)
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:481:run_analysis]   Classified as: HOTSPOT_REUSE
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:470:run_analysis] Converting pattern 13: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:33
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:472:run_analysis]   Static pattern type: RANDOM (enum: 2)
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:477:run_analysis]   Hotspot dominant_pattern set to: RANDOM (enum: 2)
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:481:run_analysis]   Classified as: IRREGULAR_GATHER_SCATTER
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:470:run_analysis] Converting pattern 14: /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:33
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:472:run_analysis]   Static pattern type: RANDOM (enum: 2)
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:477:run_analysis]   Hotspot dominant_pattern set to: RANDOM (enum: 2)
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:481:run_analysis]   Classified as: IRREGULAR_GATHER_SCATTER
+[2025-08-20 04:00:26.383] [DEBUG] [main.c:483:run_analysis] === END CONVERSION ===
+
+[2025-08-20 04:00:26.383] [INFO] [main.c:491:run_analysis] Generating optimization recommendations
+[2025-08-20 04:00:26.383] [DEBUG] [common.c:222:calloc_logged] Memory allocated (calloc): 928.00 B at 0x6285bac9d960 [recommendation_engine.c:695:recommendation_engine_create]
+[2025-08-20 04:00:26.383] [INFO] [recommendation_engine.c:706:recommendation_engine_create] Created recommendation engine with min improvement threshold 10.0%
+[2025-08-20 04:00:26.383] [DEBUG] [common.c:222:calloc_logged] Memory allocated (calloc): 322.27 KB at 0x74053bfc0010 [recommendation_engine.c:616:recommendation_engine_analyze_all]
+[2025-08-20 04:00:26.383] [INFO] [recommendation_engine.c:737:recommendation_engine_analyze] Analyzing pattern STREAMING_EVICTION for optimizations (access pattern: STRIDED)
+[2025-08-20 04:00:26.384] [DEBUG] [common.c:222:calloc_logged] Memory allocated (calloc): 21.48 KB at 0x6285bad64600 [recommendation_engine.c:743:recommendation_engine_analyze]
+[2025-08-20 04:00:26.384] [DEBUG] [recommendation_engine.c:763:recommendation_engine_analyze] Invalid stride 1452622410, using default based on pattern
+[2025-08-20 04:00:26.384] [DEBUG] [recommendation_engine.c:1105:generate_loop_tiling_recommendation] Generated loop tiling recommendation with tile size 32
+[2025-08-20 04:00:26.384] [INFO] [recommendation_engine.c:1038:recommendation_engine_analyze] Generated 3 recommendations for pattern at /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:13
+[2025-08-20 04:00:26.384] [DEBUG] [common.c:231:free_logged] Memory freed: 0x6285bad64600 [recommendation_engine.c:654:recommendation_engine_analyze_all]
+[2025-08-20 04:00:26.384] [INFO] [recommendation_engine.c:737:recommendation_engine_analyze] Analyzing pattern HOTSPOT_REUSE for optimizations (access pattern: SEQUENTIAL)
+[2025-08-20 04:00:26.384] [DEBUG] [common.c:222:calloc_logged] Memory allocated (calloc): 21.48 KB at 0x6285bad64600 [recommendation_engine.c:743:recommendation_engine_analyze]
+[2025-08-20 04:00:26.384] [INFO] [recommendation_engine.c:1038:recommendation_engine_analyze] Generated 1 recommendations for pattern at /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:13
+[2025-08-20 04:00:26.384] [DEBUG] [common.c:231:free_logged] Memory freed: 0x6285bad64600 [recommendation_engine.c:654:recommendation_engine_analyze_all]
+[2025-08-20 04:00:26.384] [INFO] [recommendation_engine.c:737:recommendation_engine_analyze] Analyzing pattern THRASHING for optimizations (access pattern: NESTED_LOOP)
+[2025-08-20 04:00:26.384] [DEBUG] [common.c:222:calloc_logged] Memory allocated (calloc): 21.48 KB at 0x6285bad64600 [recommendation_engine.c:743:recommendation_engine_analyze]
+[2025-08-20 04:00:26.384] [WARNING] [recommendation_engine.c:972:recommendation_engine_analyze] Unknown access pattern: 5
+[2025-08-20 04:00:26.384] [INFO] [recommendation_engine.c:1038:recommendation_engine_analyze] Generated 0 recommendations for pattern at /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:13
+[2025-08-20 04:00:26.384] [DEBUG] [common.c:231:free_logged] Memory freed: 0x6285bad64600 [recommendation_engine.c:654:recommendation_engine_analyze_all]
+[2025-08-20 04:00:26.384] [INFO] [recommendation_engine.c:737:recommendation_engine_analyze] Analyzing pattern STREAMING_EVICTION for optimizations (access pattern: STRIDED)
+[2025-08-20 04:00:26.384] [DEBUG] [common.c:222:calloc_logged] Memory allocated (calloc): 21.48 KB at 0x6285bad64600 [recommendation_engine.c:743:recommendation_engine_analyze]
+[2025-08-20 04:00:26.384] [DEBUG] [recommendation_engine.c:763:recommendation_engine_analyze] Invalid stride 1452622410, using default based on pattern
+[2025-08-20 04:00:26.384] [DEBUG] [recommendation_engine.c:1105:generate_loop_tiling_recommendation] Generated loop tiling recommendation with tile size 32
+[2025-08-20 04:00:26.384] [INFO] [recommendation_engine.c:1038:recommendation_engine_analyze] Generated 3 recommendations for pattern at /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:13
+[2025-08-20 04:00:26.384] [DEBUG] [common.c:231:free_logged] Memory freed: 0x6285bad64600 [recommendation_engine.c:654:recommendation_engine_analyze_all]
+[2025-08-20 04:00:26.384] [INFO] [recommendation_engine.c:737:recommendation_engine_analyze] Analyzing pattern STREAMING_EVICTION for optimizations (access pattern: STRIDED)
+[2025-08-20 04:00:26.384] [DEBUG] [common.c:222:calloc_logged] Memory allocated (calloc): 21.48 KB at 0x6285bad64600 [recommendation_engine.c:743:recommendation_engine_analyze]
+[2025-08-20 04:00:26.384] [DEBUG] [recommendation_engine.c:763:recommendation_engine_analyze] Invalid stride 1452622410, using default based on pattern
+[2025-08-20 04:00:26.384] [DEBUG] [recommendation_engine.c:1105:generate_loop_tiling_recommendation] Generated loop tiling recommendation with tile size 32
+[2025-08-20 04:00:26.384] [INFO] [recommendation_engine.c:1038:recommendation_engine_analyze] Generated 3 recommendations for pattern at /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:13
+[2025-08-20 04:00:26.384] [DEBUG] [common.c:231:free_logged] Memory freed: 0x6285bad64600 [recommendation_engine.c:654:recommendation_engine_analyze_all]
+[2025-08-20 04:00:26.384] [INFO] [recommendation_engine.c:737:recommendation_engine_analyze] Analyzing pattern HOTSPOT_REUSE for optimizations (access pattern: SEQUENTIAL)
+[2025-08-20 04:00:26.384] [DEBUG] [common.c:222:calloc_logged] Memory allocated (calloc): 21.48 KB at 0x6285bad64600 [recommendation_engine.c:743:recommendation_engine_analyze]
+[2025-08-20 04:00:26.384] [INFO] [recommendation_engine.c:1038:recommendation_engine_analyze] Generated 1 recommendations for pattern at /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:15
+[2025-08-20 04:00:26.384] [DEBUG] [common.c:231:free_logged] Memory freed: 0x6285bad64600 [recommendation_engine.c:654:recommendation_engine_analyze_all]
+[2025-08-20 04:00:26.384] [INFO] [recommendation_engine.c:737:recommendation_engine_analyze] Analyzing pattern HOTSPOT_REUSE for optimizations (access pattern: SEQUENTIAL)
+[2025-08-20 04:00:26.384] [DEBUG] [common.c:222:calloc_logged] Memory allocated (calloc): 21.48 KB at 0x6285bad64600 [recommendation_engine.c:743:recommendation_engine_analyze]
+[2025-08-20 04:00:26.384] [INFO] [recommendation_engine.c:1038:recommendation_engine_analyze] Generated 1 recommendations for pattern at /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:15
+[2025-08-20 04:00:26.384] [DEBUG] [common.c:231:free_logged] Memory freed: 0x6285bad64600 [recommendation_engine.c:654:recommendation_engine_analyze_all]
+[2025-08-20 04:00:26.384] [INFO] [recommendation_engine.c:737:recommendation_engine_analyze] Analyzing pattern HOTSPOT_REUSE for optimizations (access pattern: SEQUENTIAL)
+[2025-08-20 04:00:26.384] [DEBUG] [common.c:222:calloc_logged] Memory allocated (calloc): 21.48 KB at 0x6285bad64600 [recommendation_engine.c:743:recommendation_engine_analyze]
+[2025-08-20 04:00:26.384] [INFO] [recommendation_engine.c:1038:recommendation_engine_analyze] Generated 1 recommendations for pattern at /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:15
+[2025-08-20 04:00:26.384] [DEBUG] [common.c:231:free_logged] Memory freed: 0x6285bad64600 [recommendation_engine.c:654:recommendation_engine_analyze_all]
+[2025-08-20 04:00:26.384] [INFO] [recommendation_engine.c:737:recommendation_engine_analyze] Analyzing pattern HOTSPOT_REUSE for optimizations (access pattern: SEQUENTIAL)
+[2025-08-20 04:00:26.384] [DEBUG] [common.c:222:calloc_logged] Memory allocated (calloc): 21.48 KB at 0x6285bad64600 [recommendation_engine.c:743:recommendation_engine_analyze]
+[2025-08-20 04:00:26.384] [INFO] [recommendation_engine.c:1038:recommendation_engine_analyze] Generated 1 recommendations for pattern at /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:26
+[2025-08-20 04:00:26.384] [DEBUG] [common.c:231:free_logged] Memory freed: 0x6285bad64600 [recommendation_engine.c:654:recommendation_engine_analyze_all]
+[2025-08-20 04:00:26.384] [INFO] [recommendation_engine.c:737:recommendation_engine_analyze] Analyzing pattern HOTSPOT_REUSE for optimizations (access pattern: SEQUENTIAL)
+[2025-08-20 04:00:26.385] [DEBUG] [common.c:222:calloc_logged] Memory allocated (calloc): 21.48 KB at 0x6285bad64600 [recommendation_engine.c:743:recommendation_engine_analyze]
+[2025-08-20 04:00:26.385] [INFO] [recommendation_engine.c:1038:recommendation_engine_analyze] Generated 1 recommendations for pattern at /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:26
+[2025-08-20 04:00:26.385] [DEBUG] [common.c:231:free_logged] Memory freed: 0x6285bad64600 [recommendation_engine.c:654:recommendation_engine_analyze_all]
+[2025-08-20 04:00:26.385] [INFO] [recommendation_engine.c:737:recommendation_engine_analyze] Analyzing pattern HOTSPOT_REUSE for optimizations (access pattern: SEQUENTIAL)
+[2025-08-20 04:00:26.385] [DEBUG] [common.c:222:calloc_logged] Memory allocated (calloc): 21.48 KB at 0x6285bad64600 [recommendation_engine.c:743:recommendation_engine_analyze]
+[2025-08-20 04:00:26.385] [INFO] [recommendation_engine.c:1038:recommendation_engine_analyze] Generated 1 recommendations for pattern at /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:27
+[2025-08-20 04:00:26.385] [DEBUG] [common.c:231:free_logged] Memory freed: 0x6285bad64600 [recommendation_engine.c:654:recommendation_engine_analyze_all]
+[2025-08-20 04:00:26.385] [INFO] [recommendation_engine.c:737:recommendation_engine_analyze] Analyzing pattern HOTSPOT_REUSE for optimizations (access pattern: SEQUENTIAL)
+[2025-08-20 04:00:26.385] [DEBUG] [common.c:222:calloc_logged] Memory allocated (calloc): 21.48 KB at 0x6285bad64600 [recommendation_engine.c:743:recommendation_engine_analyze]
+[2025-08-20 04:00:26.385] [INFO] [recommendation_engine.c:1038:recommendation_engine_analyze] Generated 1 recommendations for pattern at /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:27
+[2025-08-20 04:00:26.385] [DEBUG] [common.c:231:free_logged] Memory freed: 0x6285bad64600 [recommendation_engine.c:654:recommendation_engine_analyze_all]
+[2025-08-20 04:00:26.385] [INFO] [recommendation_engine.c:737:recommendation_engine_analyze] Analyzing pattern HOTSPOT_REUSE for optimizations (access pattern: SEQUENTIAL)
+[2025-08-20 04:00:26.385] [DEBUG] [common.c:222:calloc_logged] Memory allocated (calloc): 21.48 KB at 0x6285bad64600 [recommendation_engine.c:743:recommendation_engine_analyze]
+[2025-08-20 04:00:26.385] [INFO] [recommendation_engine.c:1038:recommendation_engine_analyze] Generated 1 recommendations for pattern at /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:26
+[2025-08-20 04:00:26.385] [DEBUG] [common.c:231:free_logged] Memory freed: 0x6285bad64600 [recommendation_engine.c:654:recommendation_engine_analyze_all]
+[2025-08-20 04:00:26.385] [INFO] [recommendation_engine.c:737:recommendation_engine_analyze] Analyzing pattern IRREGULAR_GATHER_SCATTER for optimizations (access pattern: RANDOM)
+[2025-08-20 04:00:26.385] [DEBUG] [common.c:222:calloc_logged] Memory allocated (calloc): 21.48 KB at 0x6285bad64600 [recommendation_engine.c:743:recommendation_engine_analyze]
+[2025-08-20 04:00:26.385] [DEBUG] [recommendation_engine.c:1220:generate_data_layout_recommendation] Generated data layout transformation recommendation
+[2025-08-20 04:00:26.385] [INFO] [recommendation_engine.c:1038:recommendation_engine_analyze] Generated 3 recommendations for pattern at /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:33
+[2025-08-20 04:00:26.385] [DEBUG] [common.c:231:free_logged] Memory freed: 0x6285bad64600 [recommendation_engine.c:654:recommendation_engine_analyze_all]
+[2025-08-20 04:00:26.385] [INFO] [recommendation_engine.c:737:recommendation_engine_analyze] Analyzing pattern IRREGULAR_GATHER_SCATTER for optimizations (access pattern: RANDOM)
+[2025-08-20 04:00:26.385] [DEBUG] [common.c:222:calloc_logged] Memory allocated (calloc): 21.48 KB at 0x6285bad64600 [recommendation_engine.c:743:recommendation_engine_analyze]
+[2025-08-20 04:00:26.385] [DEBUG] [recommendation_engine.c:1220:generate_data_layout_recommendation] Generated data layout transformation recommendation
+[2025-08-20 04:00:26.385] [INFO] [recommendation_engine.c:1038:recommendation_engine_analyze] Generated 3 recommendations for pattern at /home/codio/workspace/other/testDir/v32/test1_bad_matrix.c:33
+[2025-08-20 04:00:26.385] [DEBUG] [common.c:231:free_logged] Memory freed: 0x6285bad64600 [recommendation_engine.c:654:recommendation_engine_analyze_all]
+[2025-08-20 04:00:26.385] [DEBUG] [common.c:222:calloc_logged] Memory allocated (calloc): 42.97 KB at 0x6285bad4ab30 [recommendation_engine.c:665:recommendation_engine_analyze_all]
+[2025-08-20 04:00:26.385] [DEBUG] [common.c:231:free_logged] Memory freed: 0x74053bfc0010 [recommendation_engine.c:676:recommendation_engine_analyze_all]
+[2025-08-20 04:00:26.385] [INFO] [recommendation_engine.c:678:recommendation_engine_analyze_all] Generated 10 total recommendations
+[2025-08-20 04:00:26.385] [INFO] [recommendation_engine.c:599:recommendation_engine_save_to_file] Saved 10 recommendations to recommendations.txt
+[2025-08-20 04:00:26.387] [INFO] [recommendation_engine.c:715:recommendation_engine_destroy] Destroying recommendation engine
+[2025-08-20 04:00:26.387] [DEBUG] [common.c:231:free_logged] Memory freed: 0x6285bac9d960 [recommendation_engine.c:717:recommendation_engine_destroy]
+[2025-08-20 04:00:26.387] [INFO] [main.c:530:run_analysis] Generating report: report.html
+[2025-08-20 04:00:26.387] [INFO] [report_generator.c:311:generate_report] Generating HTML report to report.html
+[2025-08-20 04:00:26.387] [DEBUG] [common.c:222:calloc_logged] Memory allocated (calloc): 2.33 KB at 0x6285bac9ef20 [report_generator.c:8:report_create]
+[2025-08-20 04:00:26.387] [DEBUG] [common.c:222:calloc_logged] Memory allocated (calloc): 1.00 MB at 0x74053bf10010 [report_generator.c:25:report_create]
+[2025-08-20 04:00:26.387] [INFO] [report_generator.c:31:report_create] Created report: Cache Optimization Analysis Report
+[2025-08-20 04:00:26.704] [DEBUG] [report_generator.c:281:report_add_section] Added report section: Executive Summary (priority: 100)
+[2025-08-20 04:00:26.704] [DEBUG] [report_generator.c:281:report_add_section] Added report section: Hardware Configuration (priority: 90)
+[2025-08-20 04:00:26.704] [DEBUG] [report_generator.c:281:report_add_section] Added report section: Static Analysis (priority: 80)
+[2025-08-20 04:00:26.704] [DEBUG] [report_generator.c:281:report_add_section] Added report section: Cache Hotspots (priority: 95)
+[2025-08-20 04:00:26.704] [DEBUG] [report_generator.c:281:report_add_section] Added report section: Access Patterns (priority: 85)
+[2025-08-20 04:00:26.704] [DEBUG] [report_generator.c:281:report_add_section] Added report section: Recommendations (priority: 100)
+[2025-08-20 04:00:26.705] [DEBUG] [common.c:231:free_logged] Memory freed: 0x74053bf10010 [report_generator.c:40:report_destroy]
+[2025-08-20 04:00:26.705] [DEBUG] [common.c:231:free_logged] Memory freed: 0x6285bac9ef20 [report_generator.c:43:report_destroy]
+[2025-08-20 04:00:26.705] [INFO] [report_generator.c:394:generate_report] Report generated successfully: report.html
+[2025-08-20 04:00:26.705] [DEBUG] [main.c:554:run_analysis] Freeing static analysis results
+[2025-08-20 04:00:26.705] [DEBUG] [ast_analyzer.cpp:1198:ast_analyzer_free_results] Freeing analysis results - patterns:0x6285bad6a310 loops:0x6285bacaa270 structs:(nil)
+[2025-08-20 04:00:26.705] [DEBUG] [ast_analyzer.cpp:1211:ast_analyzer_free_results] Freeing loop[2] patterns array

@@ -1,0 +1,133 @@
+[2025-06-13 18:04:12.176] [INFO] [common.c:48:logger_init] Logger initialized - Console Level: DEBUG, File Level: DEBUG, Log File: cache_optimizer.log
+[2025-06-13 18:04:12.176] [INFO] [main.c:526:main] Cache Optimizer Tool starting
+[2025-06-13 18:04:12.176] [INFO] [main.c:529:main] Mode: full, Duration: 10.0s, Samples: 100000, Threshold: 1.0%
+[2025-06-13 18:04:12.176] [INFO] [main.c:203:run_analysis] Initializing cache optimizer subsystems
+[2025-06-13 18:04:12.176] [INFO] [hardware_detector.c:226:hardware_detector_init] Initializing hardware detector
+[2025-06-13 18:04:12.176] [INFO] [hardware_detector.c:248:detect_cache_hierarchy] Starting cache hierarchy detection
+[2025-06-13 18:04:12.176] [INFO] [hardware_detector.c:255:detect_cache_hierarchy] Architecture: x86_64
+[2025-06-13 18:04:12.176] [INFO] [hardware_detector.c:57:parse_cache_from_sys] Parsing cache information from /sys/devices/system/cpu/
+[2025-06-13 18:04:12.177] [DEBUG] [hardware_detector.c:79:parse_cache_from_sys] Cache index 0 is level 1
+[2025-06-13 18:04:12.177] [DEBUG] [hardware_detector.c:97:parse_cache_from_sys] Cache size: 32768 bytes
+[2025-06-13 18:04:12.178] [DEBUG] [hardware_detector.c:108:parse_cache_from_sys] Cache line size: 64 bytes
+[2025-06-13 18:04:12.178] [DEBUG] [hardware_detector.c:116:parse_cache_from_sys] Cache associativity: 8-way
+[2025-06-13 18:04:12.179] [DEBUG] [hardware_detector.c:124:parse_cache_from_sys] Cache sets: 64
+[2025-06-13 18:04:12.179] [DEBUG] [hardware_detector.c:130:parse_cache_from_sys] Cache type: Data
+[2025-06-13 18:04:12.180] [DEBUG] [hardware_detector.c:143:parse_cache_from_sys] Cache shared across 2 CPUs
+[2025-06-13 18:04:12.180] [INFO] [hardware_detector.c:159:parse_cache_from_sys] Detected L1 cache: 32 KB, 64 B line, 8-way associative
+[2025-06-13 18:04:12.180] [DEBUG] [hardware_detector.c:79:parse_cache_from_sys] Cache index 1 is level 1
+[2025-06-13 18:04:12.181] [DEBUG] [hardware_detector.c:97:parse_cache_from_sys] Cache size: 65536 bytes
+[2025-06-13 18:04:12.181] [DEBUG] [hardware_detector.c:108:parse_cache_from_sys] Cache line size: 64 bytes
+[2025-06-13 18:04:12.182] [DEBUG] [hardware_detector.c:116:parse_cache_from_sys] Cache associativity: 4-way
+[2025-06-13 18:04:12.182] [DEBUG] [hardware_detector.c:124:parse_cache_from_sys] Cache sets: 256
+[2025-06-13 18:04:12.183] [DEBUG] [hardware_detector.c:130:parse_cache_from_sys] Cache type: Instruction
+[2025-06-13 18:04:12.183] [DEBUG] [hardware_detector.c:143:parse_cache_from_sys] Cache shared across 2 CPUs
+[2025-06-13 18:04:12.183] [INFO] [hardware_detector.c:159:parse_cache_from_sys] Detected L1 cache: 64 KB, 64 B line, 4-way associative
+[2025-06-13 18:04:12.184] [DEBUG] [hardware_detector.c:79:parse_cache_from_sys] Cache index 2 is level 2
+[2025-06-13 18:04:12.184] [DEBUG] [hardware_detector.c:97:parse_cache_from_sys] Cache size: 524288 bytes
+[2025-06-13 18:04:12.185] [DEBUG] [hardware_detector.c:108:parse_cache_from_sys] Cache line size: 64 bytes
+[2025-06-13 18:04:12.185] [DEBUG] [hardware_detector.c:116:parse_cache_from_sys] Cache associativity: 8-way
+[2025-06-13 18:04:12.185] [DEBUG] [hardware_detector.c:124:parse_cache_from_sys] Cache sets: 1024
+[2025-06-13 18:04:12.186] [DEBUG] [hardware_detector.c:130:parse_cache_from_sys] Cache type: Unified
+[2025-06-13 18:04:12.186] [DEBUG] [hardware_detector.c:143:parse_cache_from_sys] Cache shared across 2 CPUs
+[2025-06-13 18:04:12.186] [INFO] [hardware_detector.c:159:parse_cache_from_sys] Detected L2 cache: 512 KB, 64 B line, 8-way associative
+[2025-06-13 18:04:12.187] [DEBUG] [hardware_detector.c:79:parse_cache_from_sys] Cache index 3 is level 3
+[2025-06-13 18:04:12.187] [DEBUG] [hardware_detector.c:97:parse_cache_from_sys] Cache size: 8388608 bytes
+[2025-06-13 18:04:12.188] [DEBUG] [hardware_detector.c:108:parse_cache_from_sys] Cache line size: 64 bytes
+[2025-06-13 18:04:12.188] [DEBUG] [hardware_detector.c:116:parse_cache_from_sys] Cache associativity: 16-way
+[2025-06-13 18:04:12.189] [DEBUG] [hardware_detector.c:124:parse_cache_from_sys] Cache sets: 8192
+[2025-06-13 18:04:12.189] [DEBUG] [hardware_detector.c:130:parse_cache_from_sys] Cache type: Unified
+[2025-06-13 18:04:12.190] [DEBUG] [hardware_detector.c:143:parse_cache_from_sys] Cache shared across 2 CPUs
+[2025-06-13 18:04:12.190] [INFO] [hardware_detector.c:159:parse_cache_from_sys] Detected L3 cache: 8192 KB, 64 B line, 16-way associative
+[2025-06-13 18:04:12.190] [DEBUG] [hardware_detector.c:68:parse_cache_from_sys] Cache index 4 does not exist
+[2025-06-13 18:04:12.190] [INFO] [hardware_detector.c:163:parse_cache_from_sys] Total cache levels detected: 4
+[2025-06-13 18:04:12.190] [INFO] [hardware_detector.c:169:parse_cpu_info] Parsing CPU information from /proc/cpuinfo
+[2025-06-13 18:04:12.197] [DEBUG] [hardware_detector.c:193:parse_cpu_info] CPU Model: AMD EPYC 7571
+[2025-06-13 18:04:12.197] [DEBUG] [hardware_detector.c:203:parse_cpu_info] CPU Frequency: 2.54 GHz
+[2025-06-13 18:04:12.197] [DEBUG] [hardware_detector.c:203:parse_cpu_info] CPU Frequency: 2.54 GHz
+[2025-06-13 18:04:12.197] [DEBUG] [hardware_detector.c:203:parse_cpu_info] CPU Frequency: 2.52 GHz
+[2025-06-13 18:04:12.197] [DEBUG] [hardware_detector.c:203:parse_cpu_info] CPU Frequency: 2.55 GHz
+[2025-06-13 18:04:12.197] [DEBUG] [hardware_detector.c:203:parse_cpu_info] CPU Frequency: 2.54 GHz
+[2025-06-13 18:04:12.197] [DEBUG] [hardware_detector.c:203:parse_cpu_info] CPU Frequency: 2.56 GHz
+[2025-06-13 18:04:12.197] [DEBUG] [hardware_detector.c:203:parse_cpu_info] CPU Frequency: 2.54 GHz
+[2025-06-13 18:04:12.197] [DEBUG] [hardware_detector.c:203:parse_cpu_info] CPU Frequency: 2.54 GHz
+[2025-06-13 18:04:12.197] [INFO] [hardware_detector.c:215:parse_cpu_info] Detected 4 physical cores, 8 logical cores
+[2025-06-13 18:04:12.198] [INFO] [hardware_detector.c:279:detect_cache_hierarchy] Total memory: 30.73 GB
+[2025-06-13 18:04:12.198] [INFO] [hardware_detector.c:284:detect_cache_hierarchy] Page size: 4096 bytes
+[2025-06-13 18:04:12.198] [INFO] [hardware_detector.c:288:detect_cache_hierarchy] NUMA nodes: 1
+[2025-06-13 18:04:12.198] [INFO] [hardware_detector.c:297:detect_cache_hierarchy] Estimated memory bandwidth: 25 GB/s
+[2025-06-13 18:04:12.198] [INFO] [hardware_detector.c:299:detect_cache_hierarchy] Cache hierarchy detection complete
+[2025-06-13 18:04:12.198] [INFO] [hardware_detector.c:343:save_cache_info_to_file] Saving cache information to cache_info.txt
+[2025-06-13 18:04:12.198] [INFO] [hardware_detector.c:383:save_cache_info_to_file] Cache information saved successfully
+[2025-06-13 18:04:12.199] [INFO] [main.c:94:run_static_analysis] Starting static analysis on 1 files
+[2025-06-13 18:04:12.199] [INFO] [ast_analyzer.cpp:450:ast_analyzer] Created AST analyzer
+[2025-06-13 18:04:12.199] [DEBUG] [ast_analyzer.cpp:488:ast_analyzer_set_std] Set C standard: c11
+[2025-06-13 18:04:12.199] [INFO] [ast_analyzer.cpp:496:ast_analyzer_analyze_file] Analyzing file: test_matrix_multiply.c
+[2025-06-13 18:04:12.261] [INFO] [ast_analyzer.cpp:438:CreateASTConsumer] Creating AST consumer for file: /home/codio/workspace/testDir/v3/test_matrix_multiply.c
+[2025-06-13 18:04:12.261] [DEBUG] [ast_analyzer.cpp:52:CachePatternVisitor] Created CachePatternVisitor
+[2025-06-13 18:04:12.261] [DEBUG] [ast_analyzer.cpp:418:CacheAnalysisConsumer] Created CacheAnalysisConsumer
+[2025-06-13 18:04:12.374] [INFO] [ast_analyzer.cpp:422:HandleTranslationUnit] Analyzing translation unit
+[2025-06-13 18:04:12.374] [DEBUG] [ast_analyzer.cpp:105:VisitForStmt] Found for loop at /home/codio/workspace/testDir/v3/test_matrix_multiply.c:10 - depth: 1
+[2025-06-13 18:04:12.374] [DEBUG] [ast_analyzer.cpp:105:VisitForStmt] Found for loop at /home/codio/workspace/testDir/v3/test_matrix_multiply.c:11 - depth: 2
+[2025-06-13 18:04:12.374] [DEBUG] [ast_analyzer.cpp:79:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v3/test_matrix_multiply.c:12 - pattern: INDIRECT_ACCESS
+[2025-06-13 18:04:12.374] [DEBUG] [ast_analyzer.cpp:79:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v3/test_matrix_multiply.c:12 - pattern: INDIRECT_ACCESS
+[2025-06-13 18:04:12.374] [DEBUG] [ast_analyzer.cpp:105:VisitForStmt] Found for loop at /home/codio/workspace/testDir/v3/test_matrix_multiply.c:13 - depth: 3
+[2025-06-13 18:04:12.374] [DEBUG] [ast_analyzer.cpp:79:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v3/test_matrix_multiply.c:14 - pattern: INDIRECT_ACCESS
+[2025-06-13 18:04:12.374] [DEBUG] [ast_analyzer.cpp:79:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v3/test_matrix_multiply.c:14 - pattern: INDIRECT_ACCESS
+[2025-06-13 18:04:12.374] [DEBUG] [ast_analyzer.cpp:79:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v3/test_matrix_multiply.c:14 - pattern: INDIRECT_ACCESS
+[2025-06-13 18:04:12.374] [DEBUG] [ast_analyzer.cpp:79:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v3/test_matrix_multiply.c:14 - pattern: INDIRECT_ACCESS
+[2025-06-13 18:04:12.374] [DEBUG] [ast_analyzer.cpp:79:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v3/test_matrix_multiply.c:14 - pattern: INDIRECT_ACCESS
+[2025-06-13 18:04:12.374] [DEBUG] [ast_analyzer.cpp:79:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v3/test_matrix_multiply.c:14 - pattern: INDIRECT_ACCESS
+[2025-06-13 18:04:12.374] [DEBUG] [ast_analyzer.cpp:105:VisitForStmt] Found for loop at /home/codio/workspace/testDir/v3/test_matrix_multiply.c:23 - depth: 1
+[2025-06-13 18:04:12.374] [DEBUG] [ast_analyzer.cpp:105:VisitForStmt] Found for loop at /home/codio/workspace/testDir/v3/test_matrix_multiply.c:24 - depth: 2
+[2025-06-13 18:04:12.374] [DEBUG] [ast_analyzer.cpp:105:VisitForStmt] Found for loop at /home/codio/workspace/testDir/v3/test_matrix_multiply.c:25 - depth: 3
+[2025-06-13 18:04:12.374] [DEBUG] [ast_analyzer.cpp:79:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v3/test_matrix_multiply.c:26 - pattern: INDIRECT_ACCESS
+[2025-06-13 18:04:12.375] [DEBUG] [ast_analyzer.cpp:79:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v3/test_matrix_multiply.c:26 - pattern: INDIRECT_ACCESS
+[2025-06-13 18:04:12.375] [DEBUG] [ast_analyzer.cpp:79:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v3/test_matrix_multiply.c:26 - pattern: INDIRECT_ACCESS
+[2025-06-13 18:04:12.375] [DEBUG] [ast_analyzer.cpp:79:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v3/test_matrix_multiply.c:26 - pattern: INDIRECT_ACCESS
+[2025-06-13 18:04:12.375] [DEBUG] [ast_analyzer.cpp:79:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v3/test_matrix_multiply.c:26 - pattern: INDIRECT_ACCESS
+[2025-06-13 18:04:12.375] [DEBUG] [ast_analyzer.cpp:79:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v3/test_matrix_multiply.c:26 - pattern: INDIRECT_ACCESS
+[2025-06-13 18:04:12.375] [DEBUG] [ast_analyzer.cpp:105:VisitForStmt] Found for loop at /home/codio/workspace/testDir/v3/test_matrix_multiply.c:36 - depth: 1
+[2025-06-13 18:04:12.375] [DEBUG] [ast_analyzer.cpp:105:VisitForStmt] Found for loop at /home/codio/workspace/testDir/v3/test_matrix_multiply.c:37 - depth: 2
+[2025-06-13 18:04:12.375] [DEBUG] [ast_analyzer.cpp:79:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v3/test_matrix_multiply.c:38 - pattern: INDIRECT_ACCESS
+[2025-06-13 18:04:12.375] [DEBUG] [ast_analyzer.cpp:79:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v3/test_matrix_multiply.c:38 - pattern: INDIRECT_ACCESS
+[2025-06-13 18:04:12.375] [DEBUG] [ast_analyzer.cpp:79:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v3/test_matrix_multiply.c:39 - pattern: INDIRECT_ACCESS
+[2025-06-13 18:04:12.375] [DEBUG] [ast_analyzer.cpp:79:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v3/test_matrix_multiply.c:39 - pattern: INDIRECT_ACCESS
+[2025-06-13 18:04:12.375] [DEBUG] [ast_analyzer.cpp:79:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v3/test_matrix_multiply.c:40 - pattern: INDIRECT_ACCESS
+[2025-06-13 18:04:12.375] [DEBUG] [ast_analyzer.cpp:79:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v3/test_matrix_multiply.c:40 - pattern: INDIRECT_ACCESS
+[2025-06-13 18:04:12.375] [DEBUG] [ast_analyzer.cpp:79:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v3/test_matrix_multiply.c:52 - pattern: RANDOM
+[2025-06-13 18:04:12.375] [DEBUG] [ast_analyzer.cpp:79:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v3/test_matrix_multiply.c:52 - pattern: RANDOM
+[2025-06-13 18:04:12.376] [INFO] [ast_analyzer.cpp:549:ast_analyzer_analyze_file] Analysis complete: 22 patterns, 8 loops, 0 structs found
+[2025-06-13 18:04:12.376] [INFO] [main.c:126:run_static_analysis] Static analysis complete: 22 patterns, 8 loops, 0 structs
+[2025-06-13 18:04:12.376] [INFO] [ast_analyzer.cpp:463:ast_analyzer_destroy] Destroying AST analyzer
+[2025-06-13 18:04:12.376] [INFO] [main.c:137:run_dynamic_profiling] Starting dynamic profiling for 10.0 seconds
+[2025-06-13 18:04:12.376] [INFO] [perf_sampler.c:487:perf_check_permissions] perf_event_paranoid level: 4
+[2025-06-13 18:04:12.376] [WARNING] [perf_sampler.c:492:perf_check_permissions] perf_event_paranoid=4 may restrict profiling. Consider: sudo sysctl kernel.perf_event_paranoid=1
+[2025-06-13 18:04:12.376] [DEBUG] [perf_sampler.c:466:perf_config_default] Created default perf configuration
+[2025-06-13 18:04:12.377] [INFO] [perf_sampler.c:48:init_libpfm] libpfm4 initialized successfully
+[2025-06-13 18:04:12.377] [DEBUG] [common.c:213:calloc_logged] Memory allocated (calloc): 160.00 B at 0x572025e54f80 [perf_sampler.c:188:perf_sampler_create]
+[2025-06-13 18:04:12.377] [DEBUG] [common.c:213:calloc_logged] Memory allocated (calloc): 42.72 MB at 0x7b5e92400010 [perf_sampler.c:199:perf_sampler_create]
+[2025-06-13 18:04:12.377] [INFO] [perf_sampler.c:206:perf_sampler_create] Created perf sampler with capacity for 100000 samples
+[2025-06-13 18:04:12.377] [DEBUG] [common.c:213:calloc_logged] Memory allocated (calloc): 4.00 B at 0x572025de16a0 [perf_sampler.c:211:perf_sampler_create]
+[2025-06-13 18:04:12.377] [DEBUG] [common.c:213:calloc_logged] Memory allocated (calloc): 8.00 B at 0x572025de1f60 [perf_sampler.c:212:perf_sampler_create]
+[2025-06-13 18:04:12.377] [ERROR] [perf_sampler.c:251:perf_sampler_create] Failed to create perf event for CPU 0: Permission denied
+[2025-06-13 18:04:12.377] [ERROR] [perf_sampler.c:284:perf_sampler_create] Failed to create any perf events
+[2025-06-13 18:04:12.377] [INFO] [perf_sampler.c:297:perf_sampler_destroy] Destroying perf sampler
+[2025-06-13 18:04:12.377] [DEBUG] [common.c:222:free_logged] Memory freed: 0x572025de16a0 [perf_sampler.c:314:perf_sampler_destroy]
+[2025-06-13 18:04:12.377] [DEBUG] [common.c:222:free_logged] Memory freed: 0x572025de1f60 [perf_sampler.c:318:perf_sampler_destroy]
+[2025-06-13 18:04:12.377] [DEBUG] [common.c:222:free_logged] Memory freed: 0x7b5e92400010 [perf_sampler.c:322:perf_sampler_destroy]
+[2025-06-13 18:04:12.377] [DEBUG] [common.c:222:free_logged] Memory freed: 0x572025e54f80 [perf_sampler.c:326:perf_sampler_destroy]
+[2025-06-13 18:04:12.377] [ERROR] [main.c:152:run_dynamic_profiling] Failed to create perf sampler
+[2025-06-13 18:04:12.377] [INFO] [main.c:337:run_analysis] Generating report: report.html
+[2025-06-13 18:04:12.377] [INFO] [report_generator.c:233:generate_report] Generating HTML report to report.html
+[2025-06-13 18:04:12.377] [DEBUG] [common.c:213:calloc_logged] Memory allocated (calloc): 2.33 KB at 0x572025e7cd70 [report_generator.c:8:report_create]
+[2025-06-13 18:04:12.377] [DEBUG] [common.c:213:calloc_logged] Memory allocated (calloc): 1.00 MB at 0x7b5e94df7010 [report_generator.c:25:report_create]
+[2025-06-13 18:04:12.377] [INFO] [report_generator.c:31:report_create] Created report: Cache Optimization Analysis Report
+[2025-06-13 18:04:12.377] [DEBUG] [report_generator.c:203:report_add_section] Added report section: Executive Summary (priority: 100)
+[2025-06-13 18:04:12.377] [DEBUG] [report_generator.c:203:report_add_section] Added report section: Hardware Configuration (priority: 90)
+[2025-06-13 18:04:12.378] [DEBUG] [report_generator.c:203:report_add_section] Added report section: Static Analysis (priority: 80)
+[2025-06-13 18:04:12.378] [DEBUG] [common.c:222:free_logged] Memory freed: 0x7b5e94df7010 [report_generator.c:40:report_destroy]
+[2025-06-13 18:04:12.378] [DEBUG] [common.c:222:free_logged] Memory freed: 0x572025e7cd70 [report_generator.c:43:report_destroy]
+[2025-06-13 18:04:12.378] [INFO] [report_generator.c:316:generate_report] Report generated successfully: report.html
+[2025-06-13 18:04:12.378] [INFO] [hardware_detector.c:237:hardware_detector_cleanup] Cleaning up hardware detector
+[2025-06-13 18:04:12.378] [ERROR] [main.c:539:main] Failed to generate report
+[2025-06-13 18:04:12.378] [INFO] [common.c:53:logger_cleanup] Closing log file

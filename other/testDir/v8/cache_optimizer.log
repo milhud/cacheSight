@@ -1,0 +1,217 @@
+[2025-06-13 20:12:46.381] [INFO] [common.c:48:logger_init] Logger initialized - Console Level: DEBUG, File Level: DEBUG, Log File: cache_optimizer.log
+[2025-06-13 20:12:46.382] [INFO] [main.c:591:main] Cache Optimizer Tool starting
+[2025-06-13 20:12:46.382] [INFO] [main.c:594:main] Mode: full, Duration: 10.0s, Samples: 100000, Threshold: 1.0%
+[2025-06-13 20:12:46.382] [INFO] [main.c:203:run_analysis] Initializing cache optimizer subsystems
+[2025-06-13 20:12:46.382] [INFO] [hardware_detector.c:226:hardware_detector_init] Initializing hardware detector
+[2025-06-13 20:12:46.382] [INFO] [hardware_detector.c:248:detect_cache_hierarchy] Starting cache hierarchy detection
+[2025-06-13 20:12:46.382] [INFO] [hardware_detector.c:255:detect_cache_hierarchy] Architecture: x86_64
+[2025-06-13 20:12:46.382] [INFO] [hardware_detector.c:57:parse_cache_from_sys] Parsing cache information from /sys/devices/system/cpu/
+[2025-06-13 20:12:46.383] [DEBUG] [hardware_detector.c:79:parse_cache_from_sys] Cache index 0 is level 1
+[2025-06-13 20:12:46.383] [DEBUG] [hardware_detector.c:97:parse_cache_from_sys] Cache size: 32768 bytes
+[2025-06-13 20:12:46.384] [DEBUG] [hardware_detector.c:108:parse_cache_from_sys] Cache line size: 64 bytes
+[2025-06-13 20:12:46.384] [DEBUG] [hardware_detector.c:116:parse_cache_from_sys] Cache associativity: 8-way
+[2025-06-13 20:12:46.385] [DEBUG] [hardware_detector.c:124:parse_cache_from_sys] Cache sets: 64
+[2025-06-13 20:12:46.385] [DEBUG] [hardware_detector.c:130:parse_cache_from_sys] Cache type: Data
+[2025-06-13 20:12:46.386] [DEBUG] [hardware_detector.c:143:parse_cache_from_sys] Cache shared across 2 CPUs
+[2025-06-13 20:12:46.386] [INFO] [hardware_detector.c:159:parse_cache_from_sys] Detected L1 cache: 32 KB, 64 B line, 8-way associative
+[2025-06-13 20:12:46.387] [DEBUG] [hardware_detector.c:79:parse_cache_from_sys] Cache index 1 is level 1
+[2025-06-13 20:12:46.387] [DEBUG] [hardware_detector.c:97:parse_cache_from_sys] Cache size: 65536 bytes
+[2025-06-13 20:12:46.388] [DEBUG] [hardware_detector.c:108:parse_cache_from_sys] Cache line size: 64 bytes
+[2025-06-13 20:12:46.388] [DEBUG] [hardware_detector.c:116:parse_cache_from_sys] Cache associativity: 4-way
+[2025-06-13 20:12:46.388] [DEBUG] [hardware_detector.c:124:parse_cache_from_sys] Cache sets: 256
+[2025-06-13 20:12:46.389] [DEBUG] [hardware_detector.c:130:parse_cache_from_sys] Cache type: Instruction
+[2025-06-13 20:12:46.389] [DEBUG] [hardware_detector.c:143:parse_cache_from_sys] Cache shared across 2 CPUs
+[2025-06-13 20:12:46.389] [INFO] [hardware_detector.c:159:parse_cache_from_sys] Detected L1 cache: 64 KB, 64 B line, 4-way associative
+[2025-06-13 20:12:46.390] [DEBUG] [hardware_detector.c:79:parse_cache_from_sys] Cache index 2 is level 2
+[2025-06-13 20:12:46.390] [DEBUG] [hardware_detector.c:97:parse_cache_from_sys] Cache size: 524288 bytes
+[2025-06-13 20:12:46.391] [DEBUG] [hardware_detector.c:108:parse_cache_from_sys] Cache line size: 64 bytes
+[2025-06-13 20:12:46.391] [DEBUG] [hardware_detector.c:116:parse_cache_from_sys] Cache associativity: 8-way
+[2025-06-13 20:12:46.392] [DEBUG] [hardware_detector.c:124:parse_cache_from_sys] Cache sets: 1024
+[2025-06-13 20:12:46.392] [DEBUG] [hardware_detector.c:130:parse_cache_from_sys] Cache type: Unified
+[2025-06-13 20:12:46.393] [DEBUG] [hardware_detector.c:143:parse_cache_from_sys] Cache shared across 2 CPUs
+[2025-06-13 20:12:46.393] [INFO] [hardware_detector.c:159:parse_cache_from_sys] Detected L2 cache: 512 KB, 64 B line, 8-way associative
+[2025-06-13 20:12:46.393] [DEBUG] [hardware_detector.c:79:parse_cache_from_sys] Cache index 3 is level 3
+[2025-06-13 20:12:46.394] [DEBUG] [hardware_detector.c:97:parse_cache_from_sys] Cache size: 8388608 bytes
+[2025-06-13 20:12:46.394] [DEBUG] [hardware_detector.c:108:parse_cache_from_sys] Cache line size: 64 bytes
+[2025-06-13 20:12:46.395] [DEBUG] [hardware_detector.c:116:parse_cache_from_sys] Cache associativity: 16-way
+[2025-06-13 20:12:46.395] [DEBUG] [hardware_detector.c:124:parse_cache_from_sys] Cache sets: 8192
+[2025-06-13 20:12:46.395] [DEBUG] [hardware_detector.c:130:parse_cache_from_sys] Cache type: Unified
+[2025-06-13 20:12:46.396] [DEBUG] [hardware_detector.c:143:parse_cache_from_sys] Cache shared across 2 CPUs
+[2025-06-13 20:12:46.396] [INFO] [hardware_detector.c:159:parse_cache_from_sys] Detected L3 cache: 8192 KB, 64 B line, 16-way associative
+[2025-06-13 20:12:46.396] [DEBUG] [hardware_detector.c:68:parse_cache_from_sys] Cache index 4 does not exist
+[2025-06-13 20:12:46.396] [INFO] [hardware_detector.c:163:parse_cache_from_sys] Total cache levels detected: 4
+[2025-06-13 20:12:46.396] [INFO] [hardware_detector.c:169:parse_cpu_info] Parsing CPU information from /proc/cpuinfo
+[2025-06-13 20:12:46.403] [DEBUG] [hardware_detector.c:193:parse_cpu_info] CPU Model: AMD EPYC 7571
+[2025-06-13 20:12:46.403] [DEBUG] [hardware_detector.c:203:parse_cpu_info] CPU Frequency: 2.53 GHz
+[2025-06-13 20:12:46.403] [DEBUG] [hardware_detector.c:203:parse_cpu_info] CPU Frequency: 2.57 GHz
+[2025-06-13 20:12:46.403] [DEBUG] [hardware_detector.c:203:parse_cpu_info] CPU Frequency: 2.55 GHz
+[2025-06-13 20:12:46.403] [DEBUG] [hardware_detector.c:203:parse_cpu_info] CPU Frequency: 2.53 GHz
+[2025-06-13 20:12:46.403] [DEBUG] [hardware_detector.c:203:parse_cpu_info] CPU Frequency: 2.54 GHz
+[2025-06-13 20:12:46.403] [DEBUG] [hardware_detector.c:203:parse_cpu_info] CPU Frequency: 2.54 GHz
+[2025-06-13 20:12:46.403] [DEBUG] [hardware_detector.c:203:parse_cpu_info] CPU Frequency: 2.53 GHz
+[2025-06-13 20:12:46.403] [DEBUG] [hardware_detector.c:203:parse_cpu_info] CPU Frequency: 2.53 GHz
+[2025-06-13 20:12:46.403] [INFO] [hardware_detector.c:215:parse_cpu_info] Detected 4 physical cores, 8 logical cores
+[2025-06-13 20:12:46.404] [INFO] [hardware_detector.c:279:detect_cache_hierarchy] Total memory: 30.73 GB
+[2025-06-13 20:12:46.404] [INFO] [hardware_detector.c:284:detect_cache_hierarchy] Page size: 4096 bytes
+[2025-06-13 20:12:46.404] [INFO] [hardware_detector.c:288:detect_cache_hierarchy] NUMA nodes: 1
+[2025-06-13 20:12:46.404] [INFO] [hardware_detector.c:297:detect_cache_hierarchy] Estimated memory bandwidth: 25 GB/s
+[2025-06-13 20:12:46.404] [INFO] [hardware_detector.c:299:detect_cache_hierarchy] Cache hierarchy detection complete
+[2025-06-13 20:12:46.404] [INFO] [hardware_detector.c:343:save_cache_info_to_file] Saving cache information to cache_info.txt
+[2025-06-13 20:12:46.404] [INFO] [hardware_detector.c:383:save_cache_info_to_file] Cache information saved successfully
+[2025-06-13 20:12:46.404] [INFO] [main.c:94:run_static_analysis] Starting static analysis on 1 files
+[2025-06-13 20:12:46.404] [INFO] [ast_analyzer.cpp:451:ast_analyzer] Created AST analyzer
+[2025-06-13 20:12:46.405] [DEBUG] [ast_analyzer.cpp:489:ast_analyzer_set_std] Set C standard: c11
+[2025-06-13 20:12:46.405] [INFO] [ast_analyzer.cpp:497:ast_analyzer_analyze_file] Analyzing file: test_matrix_multiply.c
+[2025-06-13 20:12:46.410] [INFO] [ast_analyzer.cpp:439:CreateASTConsumer] Creating AST consumer for file: /home/codio/workspace/testDir/v8/test_matrix_multiply.c
+[2025-06-13 20:12:46.410] [DEBUG] [ast_analyzer.cpp:53:CachePatternVisitor] Created CachePatternVisitor
+[2025-06-13 20:12:46.410] [DEBUG] [ast_analyzer.cpp:419:CacheAnalysisConsumer] Created CacheAnalysisConsumer
+[2025-06-13 20:12:46.422] [INFO] [ast_analyzer.cpp:423:HandleTranslationUnit] Analyzing translation unit
+[2025-06-13 20:12:46.422] [DEBUG] [ast_analyzer.cpp:106:VisitForStmt] Found for loop at /home/codio/workspace/testDir/v8/test_matrix_multiply.c:10 - depth: 1
+[2025-06-13 20:12:46.422] [DEBUG] [ast_analyzer.cpp:106:VisitForStmt] Found for loop at /home/codio/workspace/testDir/v8/test_matrix_multiply.c:11 - depth: 2
+[2025-06-13 20:12:46.422] [DEBUG] [ast_analyzer.cpp:80:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v8/test_matrix_multiply.c:12 - pattern: INDIRECT_ACCESS
+[2025-06-13 20:12:46.422] [DEBUG] [ast_analyzer.cpp:80:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v8/test_matrix_multiply.c:12 - pattern: INDIRECT_ACCESS
+[2025-06-13 20:12:46.422] [DEBUG] [ast_analyzer.cpp:106:VisitForStmt] Found for loop at /home/codio/workspace/testDir/v8/test_matrix_multiply.c:13 - depth: 3
+[2025-06-13 20:12:46.422] [DEBUG] [ast_analyzer.cpp:80:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v8/test_matrix_multiply.c:14 - pattern: INDIRECT_ACCESS
+[2025-06-13 20:12:46.422] [DEBUG] [ast_analyzer.cpp:80:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v8/test_matrix_multiply.c:14 - pattern: INDIRECT_ACCESS
+[2025-06-13 20:12:46.422] [DEBUG] [ast_analyzer.cpp:80:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v8/test_matrix_multiply.c:14 - pattern: INDIRECT_ACCESS
+[2025-06-13 20:12:46.422] [DEBUG] [ast_analyzer.cpp:80:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v8/test_matrix_multiply.c:14 - pattern: INDIRECT_ACCESS
+[2025-06-13 20:12:46.422] [DEBUG] [ast_analyzer.cpp:80:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v8/test_matrix_multiply.c:14 - pattern: INDIRECT_ACCESS
+[2025-06-13 20:12:46.423] [DEBUG] [ast_analyzer.cpp:80:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v8/test_matrix_multiply.c:14 - pattern: INDIRECT_ACCESS
+[2025-06-13 20:12:46.423] [DEBUG] [ast_analyzer.cpp:106:VisitForStmt] Found for loop at /home/codio/workspace/testDir/v8/test_matrix_multiply.c:23 - depth: 1
+[2025-06-13 20:12:46.423] [DEBUG] [ast_analyzer.cpp:106:VisitForStmt] Found for loop at /home/codio/workspace/testDir/v8/test_matrix_multiply.c:24 - depth: 2
+[2025-06-13 20:12:46.423] [DEBUG] [ast_analyzer.cpp:106:VisitForStmt] Found for loop at /home/codio/workspace/testDir/v8/test_matrix_multiply.c:25 - depth: 3
+[2025-06-13 20:12:46.423] [DEBUG] [ast_analyzer.cpp:80:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v8/test_matrix_multiply.c:26 - pattern: INDIRECT_ACCESS
+[2025-06-13 20:12:46.423] [DEBUG] [ast_analyzer.cpp:80:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v8/test_matrix_multiply.c:26 - pattern: INDIRECT_ACCESS
+[2025-06-13 20:12:46.423] [DEBUG] [ast_analyzer.cpp:80:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v8/test_matrix_multiply.c:26 - pattern: INDIRECT_ACCESS
+[2025-06-13 20:12:46.423] [DEBUG] [ast_analyzer.cpp:80:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v8/test_matrix_multiply.c:26 - pattern: INDIRECT_ACCESS
+[2025-06-13 20:12:46.423] [DEBUG] [ast_analyzer.cpp:80:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v8/test_matrix_multiply.c:26 - pattern: INDIRECT_ACCESS
+[2025-06-13 20:12:46.423] [DEBUG] [ast_analyzer.cpp:80:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v8/test_matrix_multiply.c:26 - pattern: INDIRECT_ACCESS
+[2025-06-13 20:12:46.423] [DEBUG] [ast_analyzer.cpp:106:VisitForStmt] Found for loop at /home/codio/workspace/testDir/v8/test_matrix_multiply.c:36 - depth: 1
+[2025-06-13 20:12:46.423] [DEBUG] [ast_analyzer.cpp:106:VisitForStmt] Found for loop at /home/codio/workspace/testDir/v8/test_matrix_multiply.c:37 - depth: 2
+[2025-06-13 20:12:46.423] [DEBUG] [ast_analyzer.cpp:80:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v8/test_matrix_multiply.c:38 - pattern: INDIRECT_ACCESS
+[2025-06-13 20:12:46.423] [DEBUG] [ast_analyzer.cpp:80:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v8/test_matrix_multiply.c:38 - pattern: INDIRECT_ACCESS
+[2025-06-13 20:12:46.423] [DEBUG] [ast_analyzer.cpp:80:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v8/test_matrix_multiply.c:39 - pattern: INDIRECT_ACCESS
+[2025-06-13 20:12:46.423] [DEBUG] [ast_analyzer.cpp:80:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v8/test_matrix_multiply.c:39 - pattern: INDIRECT_ACCESS
+[2025-06-13 20:12:46.423] [DEBUG] [ast_analyzer.cpp:80:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v8/test_matrix_multiply.c:40 - pattern: INDIRECT_ACCESS
+[2025-06-13 20:12:46.423] [DEBUG] [ast_analyzer.cpp:80:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v8/test_matrix_multiply.c:40 - pattern: INDIRECT_ACCESS
+[2025-06-13 20:12:46.423] [DEBUG] [ast_analyzer.cpp:80:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v8/test_matrix_multiply.c:52 - pattern: RANDOM
+[2025-06-13 20:12:46.423] [DEBUG] [ast_analyzer.cpp:80:VisitArraySubscriptExpr] Found array access at /home/codio/workspace/testDir/v8/test_matrix_multiply.c:52 - pattern: RANDOM
+[2025-06-13 20:12:46.424] [INFO] [ast_analyzer.cpp:550:ast_analyzer_analyze_file] Analysis complete: 22 patterns, 8 loops, 0 structs found
+[2025-06-13 20:12:46.424] [INFO] [main.c:126:run_static_analysis] Static analysis complete: 22 patterns, 8 loops, 0 structs
+[2025-06-13 20:12:46.424] [INFO] [ast_analyzer.cpp:464:ast_analyzer_destroy] Destroying AST analyzer
+[2025-06-13 20:12:46.424] [INFO] [main.c:137:run_dynamic_profiling] Starting dynamic profiling for 10.0 seconds
+[2025-06-13 20:12:46.424] [INFO] [perf_sampler.c:487:perf_check_permissions] perf_event_paranoid level: 4
+[2025-06-13 20:12:46.424] [WARNING] [perf_sampler.c:492:perf_check_permissions] perf_event_paranoid=4 may restrict profiling. Consider: sudo sysctl kernel.perf_event_paranoid=1
+[2025-06-13 20:12:46.424] [DEBUG] [perf_sampler.c:466:perf_config_default] Created default perf configuration
+[2025-06-13 20:12:46.425] [INFO] [perf_sampler.c:48:init_libpfm] libpfm4 initialized successfully
+[2025-06-13 20:12:46.425] [DEBUG] [common.c:214:calloc_logged] Memory allocated (calloc): 160.00 B at 0x5635ac8b8220 [perf_sampler.c:188:perf_sampler_create]
+[2025-06-13 20:12:46.425] [DEBUG] [common.c:214:calloc_logged] Memory allocated (calloc): 42.72 MB at 0x733d03c00010 [perf_sampler.c:199:perf_sampler_create]
+[2025-06-13 20:12:46.425] [INFO] [perf_sampler.c:206:perf_sampler_create] Created perf sampler with capacity for 100000 samples
+[2025-06-13 20:12:46.425] [DEBUG] [common.c:214:calloc_logged] Memory allocated (calloc): 4.00 B at 0x5635ac8b46a0 [perf_sampler.c:211:perf_sampler_create]
+[2025-06-13 20:12:46.425] [DEBUG] [common.c:214:calloc_logged] Memory allocated (calloc): 8.00 B at 0x5635ac8b4f60 [perf_sampler.c:212:perf_sampler_create]
+[2025-06-13 20:12:46.425] [ERROR] [perf_sampler.c:251:perf_sampler_create] Failed to create perf event for CPU 0: Permission denied
+[2025-06-13 20:12:46.425] [ERROR] [perf_sampler.c:284:perf_sampler_create] Failed to create any perf events
+[2025-06-13 20:12:46.425] [INFO] [perf_sampler.c:297:perf_sampler_destroy] Destroying perf sampler
+[2025-06-13 20:12:46.425] [DEBUG] [common.c:223:free_logged] Memory freed: 0x5635ac8b46a0 [perf_sampler.c:314:perf_sampler_destroy]
+[2025-06-13 20:12:46.425] [DEBUG] [common.c:223:free_logged] Memory freed: 0x5635ac8b4f60 [perf_sampler.c:318:perf_sampler_destroy]
+[2025-06-13 20:12:46.425] [DEBUG] [common.c:223:free_logged] Memory freed: 0x733d03c00010 [perf_sampler.c:322:perf_sampler_destroy]
+[2025-06-13 20:12:46.425] [DEBUG] [common.c:223:free_logged] Memory freed: 0x5635ac8b8220 [perf_sampler.c:326:perf_sampler_destroy]
+[2025-06-13 20:12:46.425] [ERROR] [main.c:152:run_dynamic_profiling] Failed to create perf sampler
+[2025-06-13 20:12:46.425] [INFO] [main.c:299:run_analysis] No dynamic profiling data - generating patterns from static analysis
+[2025-06-13 20:12:46.425] [DEBUG] [common.c:214:calloc_logged] Memory allocated (calloc): 4.84 KB at 0x5635ac8c7570 [main.c:303:run_analysis]
+[2025-06-13 20:12:46.425] [DEBUG] [common.c:214:calloc_logged] Memory allocated (calloc): 10.47 KB at 0x5635ac920a40 [main.c:330:run_analysis]
+[2025-06-13 20:12:46.425] [INFO] [main.c:355:run_analysis] Generating optimization recommendations
+[2025-06-13 20:12:46.425] [DEBUG] [common.c:214:calloc_logged] Memory allocated (calloc): 928.00 B at 0x5635ac9c3510 [recommendation_engine.c:107:recommendation_engine_create]
+[2025-06-13 20:12:46.425] [INFO] [recommendation_engine.c:118:recommendation_engine_create] Created recommendation engine with min improvement threshold 10.0%
+[2025-06-13 20:12:46.425] [DEBUG] [common.c:214:calloc_logged] Memory allocated (calloc): 214.84 KB at 0x733d0668d010 [recommendation_engine.c:77:recommendation_engine_analyze_all]
+[2025-06-13 20:12:46.426] [INFO] [recommendation_engine.c:143:recommendation_engine_analyze] Analyzing pattern THRASHING for optimizations
+[2025-06-13 20:12:46.426] [DEBUG] [common.c:214:calloc_logged] Memory allocated (calloc): 21.48 KB at 0x5635ac97ecd0 [recommendation_engine.c:149:recommendation_engine_analyze]
+[2025-06-13 20:12:46.426] [DEBUG] [recommendation_engine.c:418:generate_loop_tiling_recommendation] Generated loop tiling recommendation with tile size 32
+[2025-06-13 20:12:46.426] [DEBUG] [recommendation_engine.c:479:generate_prefetch_recommendation] Generated prefetch recommendation with distance 8
+[2025-06-13 20:12:46.426] [DEBUG] [recommendation_engine.c:635:rank_recommendations] Ranked 2 recommendations
+[2025-06-13 20:12:46.426] [INFO] [recommendation_engine.c:352:recommendation_engine_analyze] Generated 2 recommendations for pattern
+[2025-06-13 20:12:46.426] [DEBUG] [common.c:223:free_logged] Memory freed: 0x5635ac97ecd0 [recommendation_engine.c:92:recommendation_engine_analyze_all]
+[2025-06-13 20:12:46.426] [INFO] [recommendation_engine.c:143:recommendation_engine_analyze] Analyzing pattern THRASHING for optimizations
+[2025-06-13 20:12:46.426] [DEBUG] [common.c:214:calloc_logged] Memory allocated (calloc): 21.48 KB at 0x5635ac97ecd0 [recommendation_engine.c:149:recommendation_engine_analyze]
+[2025-06-13 20:12:46.426] [DEBUG] [recommendation_engine.c:418:generate_loop_tiling_recommendation] Generated loop tiling recommendation with tile size 32
+[2025-06-13 20:12:46.426] [DEBUG] [recommendation_engine.c:479:generate_prefetch_recommendation] Generated prefetch recommendation with distance 8
+[2025-06-13 20:12:46.426] [DEBUG] [recommendation_engine.c:635:rank_recommendations] Ranked 2 recommendations
+[2025-06-13 20:12:46.426] [INFO] [recommendation_engine.c:352:recommendation_engine_analyze] Generated 2 recommendations for pattern
+[2025-06-13 20:12:46.426] [DEBUG] [common.c:223:free_logged] Memory freed: 0x5635ac97ecd0 [recommendation_engine.c:92:recommendation_engine_analyze_all]
+[2025-06-13 20:12:46.426] [INFO] [recommendation_engine.c:143:recommendation_engine_analyze] Analyzing pattern THRASHING for optimizations
+[2025-06-13 20:12:46.426] [DEBUG] [common.c:214:calloc_logged] Memory allocated (calloc): 21.48 KB at 0x5635ac97ecd0 [recommendation_engine.c:149:recommendation_engine_analyze]
+[2025-06-13 20:12:46.426] [DEBUG] [recommendation_engine.c:418:generate_loop_tiling_recommendation] Generated loop tiling recommendation with tile size 32
+[2025-06-13 20:12:46.426] [DEBUG] [recommendation_engine.c:479:generate_prefetch_recommendation] Generated prefetch recommendation with distance 8
+[2025-06-13 20:12:46.426] [DEBUG] [recommendation_engine.c:635:rank_recommendations] Ranked 2 recommendations
+[2025-06-13 20:12:46.426] [INFO] [recommendation_engine.c:352:recommendation_engine_analyze] Generated 2 recommendations for pattern
+[2025-06-13 20:12:46.758] [DEBUG] [common.c:223:free_logged] Memory freed: 0x5635ac97ecd0 [recommendation_engine.c:92:recommendation_engine_analyze_all]
+[2025-06-13 20:12:46.758] [INFO] [recommendation_engine.c:143:recommendation_engine_analyze] Analyzing pattern THRASHING for optimizations
+[2025-06-13 20:12:46.758] [DEBUG] [common.c:214:calloc_logged] Memory allocated (calloc): 21.48 KB at 0x5635ac97ecd0 [recommendation_engine.c:149:recommendation_engine_analyze]
+[2025-06-13 20:12:46.758] [DEBUG] [recommendation_engine.c:418:generate_loop_tiling_recommendation] Generated loop tiling recommendation with tile size 32
+[2025-06-13 20:12:46.759] [DEBUG] [recommendation_engine.c:479:generate_prefetch_recommendation] Generated prefetch recommendation with distance 8
+[2025-06-13 20:12:46.759] [DEBUG] [recommendation_engine.c:635:rank_recommendations] Ranked 2 recommendations
+[2025-06-13 20:12:46.759] [INFO] [recommendation_engine.c:352:recommendation_engine_analyze] Generated 2 recommendations for pattern
+[2025-06-13 20:12:46.759] [DEBUG] [common.c:223:free_logged] Memory freed: 0x5635ac97ecd0 [recommendation_engine.c:92:recommendation_engine_analyze_all]
+[2025-06-13 20:12:46.759] [INFO] [recommendation_engine.c:143:recommendation_engine_analyze] Analyzing pattern THRASHING for optimizations
+[2025-06-13 20:12:46.759] [DEBUG] [common.c:214:calloc_logged] Memory allocated (calloc): 21.48 KB at 0x5635ac97ecd0 [recommendation_engine.c:149:recommendation_engine_analyze]
+[2025-06-13 20:12:46.759] [DEBUG] [recommendation_engine.c:418:generate_loop_tiling_recommendation] Generated loop tiling recommendation with tile size 32
+[2025-06-13 20:12:46.759] [DEBUG] [recommendation_engine.c:479:generate_prefetch_recommendation] Generated prefetch recommendation with distance 8
+[2025-06-13 20:12:46.759] [DEBUG] [recommendation_engine.c:635:rank_recommendations] Ranked 2 recommendations
+[2025-06-13 20:12:46.759] [INFO] [recommendation_engine.c:352:recommendation_engine_analyze] Generated 2 recommendations for pattern
+[2025-06-13 20:12:46.759] [DEBUG] [common.c:223:free_logged] Memory freed: 0x5635ac97ecd0 [recommendation_engine.c:92:recommendation_engine_analyze_all]
+[2025-06-13 20:12:46.759] [INFO] [recommendation_engine.c:143:recommendation_engine_analyze] Analyzing pattern THRASHING for optimizations
+[2025-06-13 20:12:46.759] [DEBUG] [common.c:214:calloc_logged] Memory allocated (calloc): 21.48 KB at 0x5635ac97ecd0 [recommendation_engine.c:149:recommendation_engine_analyze]
+[2025-06-13 20:12:46.759] [DEBUG] [recommendation_engine.c:418:generate_loop_tiling_recommendation] Generated loop tiling recommendation with tile size 32
+[2025-06-13 20:12:46.759] [DEBUG] [recommendation_engine.c:479:generate_prefetch_recommendation] Generated prefetch recommendation with distance 8
+[2025-06-13 20:12:46.759] [DEBUG] [recommendation_engine.c:635:rank_recommendations] Ranked 2 recommendations
+[2025-06-13 20:12:46.759] [INFO] [recommendation_engine.c:352:recommendation_engine_analyze] Generated 2 recommendations for pattern
+[2025-06-13 20:12:46.759] [DEBUG] [common.c:223:free_logged] Memory freed: 0x5635ac97ecd0 [recommendation_engine.c:92:recommendation_engine_analyze_all]
+[2025-06-13 20:12:46.759] [INFO] [recommendation_engine.c:143:recommendation_engine_analyze] Analyzing pattern THRASHING for optimizations
+[2025-06-13 20:12:46.759] [DEBUG] [common.c:214:calloc_logged] Memory allocated (calloc): 21.48 KB at 0x5635ac97ecd0 [recommendation_engine.c:149:recommendation_engine_analyze]
+[2025-06-13 20:12:46.760] [DEBUG] [recommendation_engine.c:418:generate_loop_tiling_recommendation] Generated loop tiling recommendation with tile size 32
+[2025-06-13 20:12:46.760] [DEBUG] [recommendation_engine.c:479:generate_prefetch_recommendation] Generated prefetch recommendation with distance 8
+[2025-06-13 20:12:46.760] [DEBUG] [recommendation_engine.c:635:rank_recommendations] Ranked 2 recommendations
+[2025-06-13 20:12:46.760] [INFO] [recommendation_engine.c:352:recommendation_engine_analyze] Generated 2 recommendations for pattern
+[2025-06-13 20:12:46.760] [DEBUG] [common.c:223:free_logged] Memory freed: 0x5635ac97ecd0 [recommendation_engine.c:92:recommendation_engine_analyze_all]
+[2025-06-13 20:12:46.760] [INFO] [recommendation_engine.c:143:recommendation_engine_analyze] Analyzing pattern THRASHING for optimizations
+[2025-06-13 20:12:46.760] [DEBUG] [common.c:214:calloc_logged] Memory allocated (calloc): 21.48 KB at 0x5635ac97ecd0 [recommendation_engine.c:149:recommendation_engine_analyze]
+[2025-06-13 20:12:46.760] [DEBUG] [recommendation_engine.c:418:generate_loop_tiling_recommendation] Generated loop tiling recommendation with tile size 32
+[2025-06-13 20:12:46.760] [DEBUG] [recommendation_engine.c:479:generate_prefetch_recommendation] Generated prefetch recommendation with distance 8
+[2025-06-13 20:12:46.760] [DEBUG] [recommendation_engine.c:635:rank_recommendations] Ranked 2 recommendations
+[2025-06-13 20:12:46.760] [INFO] [recommendation_engine.c:352:recommendation_engine_analyze] Generated 2 recommendations for pattern
+[2025-06-13 20:12:46.760] [DEBUG] [common.c:223:free_logged] Memory freed: 0x5635ac97ecd0 [recommendation_engine.c:92:recommendation_engine_analyze_all]
+[2025-06-13 20:12:46.760] [INFO] [recommendation_engine.c:143:recommendation_engine_analyze] Analyzing pattern THRASHING for optimizations
+[2025-06-13 20:12:46.760] [DEBUG] [common.c:214:calloc_logged] Memory allocated (calloc): 21.48 KB at 0x5635ac97ecd0 [recommendation_engine.c:149:recommendation_engine_analyze]
+[2025-06-13 20:12:46.760] [DEBUG] [recommendation_engine.c:418:generate_loop_tiling_recommendation] Generated loop tiling recommendation with tile size 32
+[2025-06-13 20:12:46.760] [DEBUG] [recommendation_engine.c:479:generate_prefetch_recommendation] Generated prefetch recommendation with distance 8
+[2025-06-13 20:12:46.760] [DEBUG] [recommendation_engine.c:635:rank_recommendations] Ranked 2 recommendations
+[2025-06-13 20:12:46.760] [INFO] [recommendation_engine.c:352:recommendation_engine_analyze] Generated 2 recommendations for pattern
+[2025-06-13 20:12:46.760] [DEBUG] [common.c:223:free_logged] Memory freed: 0x5635ac97ecd0 [recommendation_engine.c:92:recommendation_engine_analyze_all]
+[2025-06-13 20:12:46.760] [INFO] [recommendation_engine.c:143:recommendation_engine_analyze] Analyzing pattern THRASHING for optimizations
+[2025-06-13 20:12:46.760] [DEBUG] [common.c:214:calloc_logged] Memory allocated (calloc): 21.48 KB at 0x5635ac97ecd0 [recommendation_engine.c:149:recommendation_engine_analyze]
+[2025-06-13 20:12:46.761] [DEBUG] [recommendation_engine.c:418:generate_loop_tiling_recommendation] Generated loop tiling recommendation with tile size 32
+[2025-06-13 20:12:46.761] [DEBUG] [recommendation_engine.c:479:generate_prefetch_recommendation] Generated prefetch recommendation with distance 8
+[2025-06-13 20:12:46.761] [DEBUG] [recommendation_engine.c:635:rank_recommendations] Ranked 2 recommendations
+[2025-06-13 20:12:46.761] [INFO] [recommendation_engine.c:352:recommendation_engine_analyze] Generated 2 recommendations for pattern
+[2025-06-13 20:12:46.761] [DEBUG] [common.c:223:free_logged] Memory freed: 0x5635ac97ecd0 [recommendation_engine.c:92:recommendation_engine_analyze_all]
+[2025-06-13 20:12:46.761] [INFO] [recommendation_engine.c:63:recommendation_engine_save_to_file] Saved 20 recommendations to recommendations.txt
+[2025-06-13 20:12:47.143] [INFO] [recommendation_engine.c:127:recommendation_engine_destroy] Destroying recommendation engine
+[2025-06-13 20:12:47.143] [DEBUG] [common.c:223:free_logged] Memory freed: 0x5635ac9c3510 [recommendation_engine.c:129:recommendation_engine_destroy]
+[2025-06-13 20:12:47.143] [INFO] [main.c:394:run_analysis] Generating report: report.html
+[2025-06-13 20:12:47.143] [INFO] [report_generator.c:311:generate_report] Generating HTML report to report.html
+[2025-06-13 20:12:47.143] [DEBUG] [common.c:214:calloc_logged] Memory allocated (calloc): 2.33 KB at 0x5635ac94fd70 [report_generator.c:8:report_create]
+[2025-06-13 20:12:47.143] [DEBUG] [common.c:214:calloc_logged] Memory allocated (calloc): 1.00 MB at 0x733d0658c010 [report_generator.c:25:report_create]
+[2025-06-13 20:12:47.143] [INFO] [report_generator.c:31:report_create] Created report: Cache Optimization Analysis Report
+[2025-06-13 20:12:47.143] [DEBUG] [report_generator.c:281:report_add_section] Added report section: Executive Summary (priority: 100)
+[2025-06-13 20:12:47.143] [DEBUG] [report_generator.c:281:report_add_section] Added report section: Hardware Configuration (priority: 90)
+[2025-06-13 20:12:47.143] [DEBUG] [report_generator.c:281:report_add_section] Added report section: Static Analysis (priority: 80)
+[2025-06-13 20:12:47.143] [DEBUG] [report_generator.c:281:report_add_section] Added report section: Cache Hotspots (priority: 95)
+[2025-06-13 20:12:47.144] [DEBUG] [report_generator.c:281:report_add_section] Added report section: Access Patterns (priority: 85)
+[2025-06-13 20:12:47.144] [DEBUG] [report_generator.c:281:report_add_section] Added report section: Recommendations (priority: 100)
+[2025-06-13 20:12:47.144] [DEBUG] [common.c:223:free_logged] Memory freed: 0x733d0658c010 [report_generator.c:40:report_destroy]
+[2025-06-13 20:12:47.144] [DEBUG] [common.c:223:free_logged] Memory freed: 0x5635ac94fd70 [report_generator.c:43:report_destroy]
+[2025-06-13 20:12:47.144] [INFO] [report_generator.c:394:generate_report] Report generated successfully: report.html
+[2025-06-13 20:12:47.144] [DEBUG] [ast_analyzer.cpp:636:ast_analyzer_free_results] Freeing analysis results
+[2025-06-13 20:12:47.144] [DEBUG] [common.c:223:free_logged] Memory freed: 0x5635ac8c7570 [sample_collector.c:523:sample_collector_free_hotspots]
+[2025-06-13 20:12:47.144] [INFO] [hardware_detector.c:237:hardware_detector_cleanup] Cleaning up hardware detector
+[2025-06-13 20:12:47.144] [INFO] [common.c:53:logger_cleanup] Closing log file

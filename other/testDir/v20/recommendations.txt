@@ -1,0 +1,281 @@
+Cache Optimization Recommendations
+==================================
+
+Total recommendations: 7
+
+
+========================================
+
+Recommendation #1
+-----------------
+Type: LOOP_TILING
+Priority: 1
+Expected Improvement: 65.0%
+Confidence: 85%
+Implementation Difficulty: 6/10
+Location: /home/codio/workspace/testDir/v20/test1_bad_matrix.c:13
+
+Rationale:
+Loop tiling improves temporal locality by processing data in cache-sized blocks. Working set of 1024 KB exceeds L1 cache (32 KB). Tiling reduces cache misses by ~65%.
+
+Compiler Flags:
+-floop-block -floop-strip-mine -floop-interchange
+
+Implementation Guide:
+1. Identify loop bounds and array dimensions
+2. Choose tile size to fit in L1 cache (32 elements)
+3. Add outer loops with tile-sized steps
+4. Ensure inner loops handle boundary conditions
+5. Test with different tile sizes for optimal performance
+
+Code Example:
+// Original nested loops with poor cache behavior
+// for (int i = 0; i < N; i++)
+//   for (int j = 0; j < M; j++)
+//     C[i][j] = A[i][j] + B[i][j];
+
+// Tiled version for better cache reuse
+#define TILE_SIZE 32  // Fits in L1 cache
+
+for (int ii = 0; ii < N; ii += TILE_SIZE) {
+    for (int jj = 0; jj < M; jj += TILE_SIZE) {
+        // Process one tile
+        for (int i = ii; i < min(ii + TILE_SIZE, N); i++) {
+            for (int j = jj; j < min(jj + TILE_SIZE, M); j++) {
+                C[i][j] = A[i][j] + B[i][j];
+            }
+        }
+    }
+}
+
+
+========================================
+
+Recommendation #2
+-----------------
+Type: LOOP_VECTORIZE
+Priority: 2
+Expected Improvement: 40.0%
+Confidence: 90%
+Implementation Difficulty: 3/10
+Location: /home/codio/workspace/testDir/v20/test1_bad_matrix.c:15
+
+Rationale:
+Sequential access patterns are ideal for SIMD vectorization. Processing 4-8 elements simultaneously can improve performance by 4-8x.
+
+Compiler Flags:
+-O3 -march=native -ftree-vectorize -mavx2 -mfma -fopt-info-vec
+
+Implementation Guide:
+1. Ensure data is aligned to 32-byte boundaries
+2. Use -march=native for auto-vectorization
+3. Consider #pragma omp simd for explicit vectorization
+4. Check vectorization report with -fopt-info-vec
+
+Code Example:
+// Vectorize sequential access
+#pragma omp simd
+for (int i = 0; i < n; i++) {
+    sum += data[i];
+}
+
+// Or use intrinsics for more control:
+#include <immintrin.h>
+__m256d vsum = _mm256_setzero_pd();
+for (int i = 0; i < n; i += 4) {
+    __m256d vdata = _mm256_load_pd(&data[i]);
+    vsum = _mm256_add_pd(vsum, vdata);
+}
+
+
+========================================
+
+Recommendation #3
+-----------------
+Type: LOOP_VECTORIZE
+Priority: 2
+Expected Improvement: 40.0%
+Confidence: 90%
+Implementation Difficulty: 3/10
+Location: /home/codio/workspace/testDir/v20/test1_bad_matrix.c:26
+
+Rationale:
+Sequential access patterns are ideal for SIMD vectorization. Processing 4-8 elements simultaneously can improve performance by 4-8x.
+
+Compiler Flags:
+-O3 -march=native -ftree-vectorize -mavx2 -mfma -fopt-info-vec
+
+Implementation Guide:
+1. Ensure data is aligned to 32-byte boundaries
+2. Use -march=native for auto-vectorization
+3. Consider #pragma omp simd for explicit vectorization
+4. Check vectorization report with -fopt-info-vec
+
+Code Example:
+// Vectorize sequential access
+#pragma omp simd
+for (int i = 0; i < n; i++) {
+    sum += data[i];
+}
+
+// Or use intrinsics for more control:
+#include <immintrin.h>
+__m256d vsum = _mm256_setzero_pd();
+for (int i = 0; i < n; i += 4) {
+    __m256d vdata = _mm256_load_pd(&data[i]);
+    vsum = _mm256_add_pd(vsum, vdata);
+}
+
+
+========================================
+
+Recommendation #4
+-----------------
+Type: PREFETCH_HINTS
+Priority: 3
+Expected Improvement: 25.0%
+Confidence: 80%
+Implementation Difficulty: 4/10
+Location: /home/codio/workspace/testDir/v20/test1_bad_matrix.c:13
+
+Rationale:
+Non-temporal hints prevent streaming data from evicting useful cached data, preserving performance.
+
+Compiler Flags:
+-fprefetch-loop-arrays -msse4.2
+
+Implementation Guide:
+1. Use non-temporal stores for data not reused
+2. Keep frequently accessed data in cache
+3. Process in chunks to maintain useful data
+4. Consider cache partitioning if available
+
+Code Example:
+// Non-temporal stores for streaming data
+#include <immintrin.h>
+for (int i = 0; i < large_n; i += 4) {
+    __m256d vdata = _mm256_load_pd(&input[i]);
+    // Process vdata
+    _mm256_stream_pd(&output[i], vdata);  // Bypass cache
+}
+_mm_sfence();  // Ensure completion
+
+// Or use compiler intrinsics
+#pragma GCC ivdep
+#pragma vector nontemporal
+
+Recommendation #5
+-----------------
+Type: LOOP_VECTORIZE
+Priority: 3
+Expected Improvement: 25.0%
+Confidence: 70%
+Implementation Difficulty: 5/10
+Location: /home/codio/workspace/testDir/v20/test1_bad_matrix.c:13
+
+Rationale:
+Large stride (1452622410) causes cache line waste. Gather instructions can improve efficiency.
+
+Compiler Flags:
+-O3 -march=native -ftree-vectorize -mavx2 -mfma -fopt-info-vec
+
+Code Example:
+// Use gather instructions for strided access
+#include <immintrin.h>
+__m256i vindices = _mm256_set_epi32(7*stride, 6*stride, 5*stride, 4*stride,
+                                     3*stride, 2*stride, stride, 0);
+for (int i = 0; i < n; i += 8) {
+    __m256d vdata = _mm256_i32gather_pd(&data[i], vindices, 8);
+    // Process vdata
+}
+
+
+========================================
+
+Recommendation #6
+-----------------
+Type: PREFETCH_HINTS
+Priority: 3
+Expected Improvement: 15.0%
+Confidence: 75%
+Implementation Difficulty: 3/10
+Location: /home/codio/workspace/testDir/v20/test1_bad_matrix.c:15
+
+Rationale:
+Software prefetching can hide memory latency by bringing data into cache before it's needed. With 5.0% miss rate and SEQUENTIAL access pattern, prefetching can reduce stalls.
+
+Compiler Flags:
+-fprefetch-loop-arrays -msse4.2
+
+Implementation Guide:
+1. Identify the access pattern and stride
+2. Calculate prefetch distance (typically 4-16 iterations ahead)
+3. Insert prefetch intrinsics or builtins
+4. Use _MM_HINT_T0 for L1, _MM_HINT_T1 for L2
+5. Profile to find optimal prefetch distance
+
+Code Example:
+// Add software prefetch hints
+#include <xmmintrin.h>  // For _mm_prefetch
+
+for (int i = 0; i < n; i++) {
+    // Prefetch future data
+    if (i + 4 < n) {
+        _mm_prefetch(&data[i + 4], _MM_HINT_T0);  // Prefetch to L1
+    }
+    
+    // Process current element
+    result[i] = process(data[i]);
+}
+
+// Alternative: Use compiler builtin
+for (int i = 0; i < n; i++) {
+    __builtin_prefetch(&data[i + 4], 0, 3);
+    result[i] = process(data[i]);
+}
+
+
+========================================
+
+Recommendation #7
+-----------------
+Type: PREFETCH_HINTS
+Priority: 3
+Expected Improvement: 15.0%
+Confidence: 75%
+Implementation Difficulty: 3/10
+Location: /home/codio/workspace/testDir/v20/test1_bad_matrix.c:26
+
+Rationale:
+Software prefetching can hide memory latency by bringing data into cache before it's needed. With 5.0% miss rate and SEQUENTIAL access pattern, prefetching can reduce stalls.
+
+Compiler Flags:
+-fprefetch-loop-arrays -msse4.2
+
+Implementation Guide:
+1. Identify the access pattern and stride
+2. Calculate prefetch distance (typically 4-16 iterations ahead)
+3. Insert prefetch intrinsics or builtins
+4. Use _MM_HINT_T0 for L1, _MM_HINT_T1 for L2
+5. Profile to find optimal prefetch distance
+
+Code Example:
+// Add software prefetch hints
+#include <xmmintrin.h>  // For _mm_prefetch
+
+for (int i = 0; i < n; i++) {
+    // Prefetch future data
+    if (i + 4 < n) {
+        _mm_prefetch(&data[i + 4], _MM_HINT_T0);  // Prefetch to L1
+    }
+    
+    // Process current element
+    result[i] = process(data[i]);
+}
+
+// Alternative: Use compiler builtin
+for (int i = 0; i < n; i++) {
+    __builtin_prefetch(&data[i + 4], 0, 3);
+    result[i] = process(data[i]);
+}
+

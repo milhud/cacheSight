@@ -1,0 +1,532 @@
+Cache Optimization Recommendations
+==================================
+
+Total recommendations: 14
+
+
+========================================
+
+Recommendation #1
+-----------------
+Type: LOOP_TILING
+Priority: 1
+Expected Improvement: 65.0%
+Confidence: 85%
+Implementation Difficulty: 6/10
+Location: /home/codio/workspace/testDir/v21/test1_bad_matrix.c:13
+
+Rationale:
+Loop tiling improves temporal locality by processing data in cache-sized blocks. Working set of 1024 KB exceeds L1 cache (32 KB). Tiling reduces cache misses by ~65%.
+
+Compiler Flags:
+-floop-block -floop-strip-mine -floop-interchange
+
+Implementation Guide:
+1. Identify loop bounds and array dimensions
+2. Choose tile size to fit in L1 cache (32 elements)
+3. Add outer loops with tile-sized steps
+4. Ensure inner loops handle boundary conditions
+5. Test with different tile sizes for optimal performance
+
+Code Example:
+// Original nested loops with poor cache behavior
+// for (int i = 0; i < N; i++)
+//   for (int j = 0; j < M; j++)
+//     C[i][j] = A[i][j] + B[i][j];
+
+// Tiled version for better cache reuse
+#define TILE_SIZE 32  // Fits in L1 cache
+
+for (int ii = 0; ii < N; ii += TILE_SIZE) {
+    for (int jj = 0; jj < M; jj += TILE_SIZE) {
+        // Process one tile
+        for (int i = ii; i < min(ii + TILE_SIZE, N); i++) {
+            for (int j = jj; j < min(jj + TILE_SIZE, M); j++) {
+                C[i][j] = A[i][j] + B[i][j];
+            }
+        }
+    }
+}
+
+Recommendation #2
+-----------------
+Type: ACCESS_REORDER
+Priority: 1
+Expected Improvement: 60.0%
+Confidence: 95%
+Implementation Difficulty: 2/10
+Location: /home/codio/workspace/testDir/v21/test1_bad_matrix.c:13
+
+Rationale:
+Column-major access in row-major layout causes cache misses on every access. Loop interchange provides immediate and significant improvement.
+
+Compiler Flags:
+-floop-interchange -ftree-loop-distribution -ftree-loop-im
+
+Implementation Guide:
+1. Swap loop order to access memory sequentially
+2. Inner loop should iterate over contiguous memory
+3. Use compiler pragmas for automatic interchange
+4. Consider cache-oblivious algorithms
+
+Code Example:
+// Original column-major access (poor)
+// for (int j = 0; j < N; j++)
+//     for (int i = 0; i < M; i++)
+//         sum += matrix[i][j];
+
+// Optimized row-major access
+for (int i = 0; i < M; i++) {
+    for (int j = 0; j < N; j++) {
+        sum += matrix[i][j];  // Sequential in memory
+    }
+}
+
+// Or use loop interchange pragma
+#pragma GCC ivdep
+#pragma GCC loop interchange
+
+Recommendation #3
+-----------------
+Type: CACHE_BLOCKING
+Priority: 2
+Expected Improvement: 45.0%
+Confidence: 85%
+Implementation Difficulty: 5/10
+Location: /home/codio/workspace/testDir/v21/test1_bad_matrix.c:13
+
+Rationale:
+Multi-level cache blocking keeps data in appropriate cache levels, preventing thrashing.
+
+Compiler Flags:
+-floop-block --param l1-cache-size=32 --param l2-cache-size=512
+
+Code Example:
+// Cache blocking to reduce working set
+const int L1_BLOCK = 32;   // Fit in L1
+const int L2_BLOCK = 128;  // Fit in L2
+const int L3_BLOCK = 512;  // Fit in L3
+
+for (int l3 = 0; l3 < n; l3 += L3_BLOCK) {
+    for (int l2 = l3; l2 < min(l3 + L3_BLOCK, n); l2 += L2_BLOCK) {
+        for (int l1 = l2; l1 < min(l2 + L2_BLOCK, n); l1 += L1_BLOCK) {
+            // Process L1-sized block
+        }
+    }
+}
+
+
+========================================
+
+Recommendation #4
+-----------------
+Type: LOOP_VECTORIZE
+Priority: 2
+Expected Improvement: 40.0%
+Confidence: 90%
+Implementation Difficulty: 3/10
+Location: /home/codio/workspace/testDir/v21/test1_bad_matrix.c:15
+
+Rationale:
+Sequential access patterns are ideal for SIMD vectorization. Processing 4-8 elements simultaneously can improve performance by 4-8x.
+
+Compiler Flags:
+-O3 -march=native -ftree-vectorize -mavx2 -mfma -fopt-info-vec
+
+Implementation Guide:
+1. Ensure data is aligned to 32-byte boundaries
+2. Use -march=native for auto-vectorization
+3. Consider #pragma omp simd for explicit vectorization
+4. Check vectorization report with -fopt-info-vec
+
+Code Example:
+// Vectorize sequential access
+#pragma omp simd
+for (int i = 0; i < n; i++) {
+    sum += data[i];
+}
+
+// Or use intrinsics for more control:
+#include <immintrin.h>
+__m256d vsum = _mm256_setzero_pd();
+for (int i = 0; i < n; i += 4) {
+    __m256d vdata = _mm256_load_pd(&data[i]);
+    vsum = _mm256_add_pd(vsum, vdata);
+}
+
+
+========================================
+
+Recommendation #5
+-----------------
+Type: LOOP_VECTORIZE
+Priority: 2
+Expected Improvement: 40.0%
+Confidence: 90%
+Implementation Difficulty: 3/10
+Location: /home/codio/workspace/testDir/v21/test1_bad_matrix.c:26
+
+Rationale:
+Sequential access patterns are ideal for SIMD vectorization. Processing 4-8 elements simultaneously can improve performance by 4-8x.
+
+Compiler Flags:
+-O3 -march=native -ftree-vectorize -mavx2 -mfma -fopt-info-vec
+
+Implementation Guide:
+1. Ensure data is aligned to 32-byte boundaries
+2. Use -march=native for auto-vectorization
+3. Consider #pragma omp simd for explicit vectorization
+4. Check vectorization report with -fopt-info-vec
+
+Code Example:
+// Vectorize sequential access
+#pragma omp simd
+for (int i = 0; i < n; i++) {
+    sum += data[i];
+}
+
+// Or use intrinsics for more control:
+#include <immintrin.h>
+__m256d vsum = _mm256_setzero_pd();
+for (int i = 0; i < n; i += 4) {
+    __m256d vdata = _mm256_load_pd(&data[i]);
+    vsum = _mm256_add_pd(vsum, vdata);
+}
+
+
+========================================
+
+Recommendation #6
+-----------------
+Type: LOOP_VECTORIZE
+Priority: 2
+Expected Improvement: 40.0%
+Confidence: 90%
+Implementation Difficulty: 3/10
+Location: /home/codio/workspace/testDir/v21/test1_bad_matrix.c:27
+
+Rationale:
+Sequential access patterns are ideal for SIMD vectorization. Processing 4-8 elements simultaneously can improve performance by 4-8x.
+
+Compiler Flags:
+-O3 -march=native -ftree-vectorize -mavx2 -mfma -fopt-info-vec
+
+Implementation Guide:
+1. Ensure data is aligned to 32-byte boundaries
+2. Use -march=native for auto-vectorization
+3. Consider #pragma omp simd for explicit vectorization
+4. Check vectorization report with -fopt-info-vec
+
+Code Example:
+// Vectorize sequential access
+#pragma omp simd
+for (int i = 0; i < n; i++) {
+    sum += data[i];
+}
+
+// Or use intrinsics for more control:
+#include <immintrin.h>
+__m256d vsum = _mm256_setzero_pd();
+for (int i = 0; i < n; i += 4) {
+    __m256d vdata = _mm256_load_pd(&data[i]);
+    vsum = _mm256_add_pd(vsum, vdata);
+}
+
+
+========================================
+
+Recommendation #7
+-----------------
+Type: DATA_LAYOUT_CHANGE
+Priority: 2
+Expected Improvement: 35.0%
+Confidence: 60%
+Implementation Difficulty: 8/10
+Location: /home/codio/workspace/testDir/v21/test1_bad_matrix.c:33
+
+Rationale:
+Random access patterns cannot benefit from hardware prefetching. Reorganizing access order or data layout is necessary.
+
+Compiler Flags:
+-O3 -march=native -mtune=native
+
+Implementation Guide:
+1. Sort indices if possible to improve locality
+2. Implement software caching for frequently accessed data
+3. Consider data structure reorganization
+4. Use smaller data types if possible
+
+Code Example:
+// Option 1: Sort indices for better locality
+int sorted_indices[N];
+memcpy(sorted_indices, indices, N * sizeof(int));
+qsort(sorted_indices, N, sizeof(int), compare_int);
+for (int i = 0; i < N; i++) {
+    sum += data[sorted_indices[i]];
+}
+
+// Option 2: Use software cache/memoization
+struct cache_line {
+    int tag;
+    double values[8];
+} sw_cache[CACHE_SIZE];
+
+
+========================================
+
+Recommendation #8
+-----------------
+Type: PREFETCH_HINTS
+Priority: 3
+Expected Improvement: 25.0%
+Confidence: 80%
+Implementation Difficulty: 4/10
+Location: /home/codio/workspace/testDir/v21/test1_bad_matrix.c:13
+
+Rationale:
+Non-temporal hints prevent streaming data from evicting useful cached data, preserving performance.
+
+Compiler Flags:
+-fprefetch-loop-arrays -msse4.2
+
+Implementation Guide:
+1. Use non-temporal stores for data not reused
+2. Keep frequently accessed data in cache
+3. Process in chunks to maintain useful data
+4. Consider cache partitioning if available
+
+Code Example:
+// Non-temporal stores for streaming data
+#include <immintrin.h>
+for (int i = 0; i < large_n; i += 4) {
+    __m256d vdata = _mm256_load_pd(&input[i]);
+    // Process vdata
+    _mm256_stream_pd(&output[i], vdata);  // Bypass cache
+}
+_mm_sfence();  // Ensure completion
+
+// Or use compiler intrinsics
+#pragma GCC ivdep
+#pragma vector nontemporal
+
+Recommendation #9
+-----------------
+Type: LOOP_VECTORIZE
+Priority: 3
+Expected Improvement: 25.0%
+Confidence: 70%
+Implementation Difficulty: 5/10
+Location: /home/codio/workspace/testDir/v21/test1_bad_matrix.c:13
+
+Rationale:
+Large stride (1452622410) causes cache line waste. Gather instructions can improve efficiency.
+
+Compiler Flags:
+-O3 -march=native -ftree-vectorize -mavx2 -mfma -fopt-info-vec
+
+Code Example:
+// Use gather instructions for strided access
+#include <immintrin.h>
+__m256i vindices = _mm256_set_epi32(7*stride, 6*stride, 5*stride, 4*stride,
+                                     3*stride, 2*stride, stride, 0);
+for (int i = 0; i < n; i += 8) {
+    __m256d vdata = _mm256_i32gather_pd(&data[i], vindices, 8);
+    // Process vdata
+}
+
+
+========================================
+
+Recommendation #10
+-----------------
+Type: MEMORY_POOLING
+Priority: 3
+Expected Improvement: 20.0%
+Confidence: 70%
+Implementation Difficulty: 6/10
+Location: /home/codio/workspace/testDir/v21/test1_bad_matrix.c:33
+
+Rationale:
+Memory pooling keeps related data together, improving cache locality for random access.
+
+Compiler Flags:
+-O3 -march=native -mtune=native
+
+Code Example:
+// Use memory pool to improve locality
+typedef struct {
+    void* blocks[MAX_BLOCKS];
+    size_t block_size;
+    int free_list[MAX_BLOCKS];
+} memory_pool_t;
+
+// Allocate from pool instead of malloc
+data = pool_alloc(&pool, size);
+
+
+========================================
+
+Recommendation #11
+-----------------
+Type: PREFETCH_HINTS
+Priority: 3
+Expected Improvement: 15.0%
+Confidence: 75%
+Implementation Difficulty: 3/10
+Location: /home/codio/workspace/testDir/v21/test1_bad_matrix.c:27
+
+Rationale:
+Software prefetching can hide memory latency by bringing data into cache before it's needed. With 5.0% miss rate and SEQUENTIAL access pattern, prefetching can reduce stalls.
+
+Compiler Flags:
+-fprefetch-loop-arrays -msse4.2
+
+Implementation Guide:
+1. Identify the access pattern and stride
+2. Calculate prefetch distance (typically 4-16 iterations ahead)
+3. Insert prefetch intrinsics or builtins
+4. Use _MM_HINT_T0 for L1, _MM_HINT_T1 for L2
+5. Profile to find optimal prefetch distance
+
+Code Example:
+// Add software prefetch hints
+#include <xmmintrin.h>  // For _mm_prefetch
+
+for (int i = 0; i < n; i++) {
+    // Prefetch future data
+    if (i + 4 < n) {
+        _mm_prefetch(&data[i + 4], _MM_HINT_T0);  // Prefetch to L1
+    }
+    
+    // Process current element
+    result[i] = process(data[i]);
+}
+
+// Alternative: Use compiler builtin
+for (int i = 0; i < n; i++) {
+    __builtin_prefetch(&data[i + 4], 0, 3);
+    result[i] = process(data[i]);
+}
+
+
+========================================
+
+Recommendation #12
+-----------------
+Type: PREFETCH_HINTS
+Priority: 3
+Expected Improvement: 15.0%
+Confidence: 75%
+Implementation Difficulty: 3/10
+Location: /home/codio/workspace/testDir/v21/test1_bad_matrix.c:26
+
+Rationale:
+Software prefetching can hide memory latency by bringing data into cache before it's needed. With 5.0% miss rate and SEQUENTIAL access pattern, prefetching can reduce stalls.
+
+Compiler Flags:
+-fprefetch-loop-arrays -msse4.2
+
+Implementation Guide:
+1. Identify the access pattern and stride
+2. Calculate prefetch distance (typically 4-16 iterations ahead)
+3. Insert prefetch intrinsics or builtins
+4. Use _MM_HINT_T0 for L1, _MM_HINT_T1 for L2
+5. Profile to find optimal prefetch distance
+
+Code Example:
+// Add software prefetch hints
+#include <xmmintrin.h>  // For _mm_prefetch
+
+for (int i = 0; i < n; i++) {
+    // Prefetch future data
+    if (i + 4 < n) {
+        _mm_prefetch(&data[i + 4], _MM_HINT_T0);  // Prefetch to L1
+    }
+    
+    // Process current element
+    result[i] = process(data[i]);
+}
+
+// Alternative: Use compiler builtin
+for (int i = 0; i < n; i++) {
+    __builtin_prefetch(&data[i + 4], 0, 3);
+    result[i] = process(data[i]);
+}
+
+
+========================================
+
+Recommendation #13
+-----------------
+Type: PREFETCH_HINTS
+Priority: 3
+Expected Improvement: 15.0%
+Confidence: 75%
+Implementation Difficulty: 3/10
+Location: /home/codio/workspace/testDir/v21/test1_bad_matrix.c:15
+
+Rationale:
+Software prefetching can hide memory latency by bringing data into cache before it's needed. With 5.0% miss rate and SEQUENTIAL access pattern, prefetching can reduce stalls.
+
+Compiler Flags:
+-fprefetch-loop-arrays -msse4.2
+
+Implementation Guide:
+1. Identify the access pattern and stride
+2. Calculate prefetch distance (typically 4-16 iterations ahead)
+3. Insert prefetch intrinsics or builtins
+4. Use _MM_HINT_T0 for L1, _MM_HINT_T1 for L2
+5. Profile to find optimal prefetch distance
+
+Code Example:
+// Add software prefetch hints
+#include <xmmintrin.h>  // For _mm_prefetch
+
+for (int i = 0; i < n; i++) {
+    // Prefetch future data
+    if (i + 4 < n) {
+        _mm_prefetch(&data[i + 4], _MM_HINT_T0);  // Prefetch to L1
+    }
+    
+    // Process current element
+    result[i] = process(data[i]);
+}
+
+// Alternative: Use compiler builtin
+for (int i = 0; i < n; i++) {
+    __builtin_prefetch(&data[i + 4], 0, 3);
+    result[i] = process(data[i]);
+}
+
+
+========================================
+
+Recommendation #14
+-----------------
+Type: ACCESS_REORDER
+Priority: 3
+Expected Improvement: 15.0%
+Confidence: 50%
+Implementation Difficulty: 8/10
+Location: /home/codio/workspace/testDir/v21/test1_bad_matrix.c:33
+
+Rationale:
+High severity pattern requires detailed profiling to identify the best optimization strategy.
+
+Compiler Flags:
+-floop-interchange -ftree-loop-distribution -ftree-loop-im
+
+Code Example:
+// Profile-guided optimization
+1. Compile with -fprofile-generate
+2. Run representative workload
+3. Recompile with -fprofile-use
+
+// Manual profiling
+#ifdef PROFILE
+uint64_t start = rdtsc();
+// Hot code here
+uint64_t cycles = rdtsc() - start;
+profile_record(cycles);
+#endif
+

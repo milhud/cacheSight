@@ -20,9 +20,9 @@ This tool is very much a work in progress, mainly concerning deduplication issue
 - nested_loop - recommends loop interchange, tiling
 - indirect_access - recommends prefetching, data layout changes
 - cache_thrashing - recommends loop tiling, blocking
-- false_sharing - recommends paddling, alignment
+- false_sharing - recommends padding, alignment
 - streaming_eviction - gives non-temporal hints
-- bank_conflicts - recommends paddling, prime dimensions
+- bank_conflicts - recommends padding, prime dimensions
 - capacity_misses - recommends data compression, tiling
 - conflict_misses - recommends array padding
 - coherency_misses - recommends thread-local storage

@@ -2,7 +2,7 @@
 
 ## Work In Progress
 
-This tool is very much a workr in progress, mainly concerning deduplication issues that must be rectified. Forthcoming fixes should fix these problems. Stay tuned, and feel free to contribute when able.All noted issues should be documented in the "Issues" tab.
+This tool is very much a work in progress, mainly concerning deduplication issues that must be rectified. Forthcoming fixes should fix these problems. Stay tuned, and feel free to contribute when able. All noted issues should be documented in the "Issues" tab.
 
 ## Features
 - static analysis: AST-based pattern detection with Clang

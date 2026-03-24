@@ -1,26 +1,51 @@
 # Cache Optimizer Tool Makefile
 
-# Compiler settings
-CC := clang
-CXX := clang++
-LLVM_CONFIG := llvm-config-14
+# Compiler settings - use AOCC (AMD Clang 17) or fall back to system clang
+AOCC_PREFIX := /gpfsm/dulocal15/sles15/amd/aocc-compiler-5.0.0
+CC := $(AOCC_PREFIX)/bin/clang
+CXX := $(AOCC_PREFIX)/bin/clang++
+LLVM_CONFIG := $(AOCC_PREFIX)/bin/llvm-config
 
 # Base flags
 CFLAGS := -Wall -Wextra -O2 -g -pthread -fPIC
-CXXFLAGS := -Wall -Wextra -O2 -g -pthread -fPIC -std=c++14
+CXXFLAGS := -Wall -Wextra -O2 -g -pthread -fPIC -std=c++17
 
 # Include paths
 INCLUDES := -I. \
-            -I/usr/lib/llvm-14/include \
-            -I/usr/include/llvm-14 \
-            -I/usr/include/llvm-c-14
+            -I$(AOCC_PREFIX)/include \
+            -I$(AOCC_PREFIX)/include/clang \
+            -I$(AOCC_PREFIX)/include/clang-c
 
 # LLVM/Clang specific flags
-LLVM_CXXFLAGS := $(shell $(LLVM_CONFIG) --cxxflags)
-LLVM_LDFLAGS := $(shell $(LLVM_CONFIG) --ldflags)
+LLVM_CXXFLAGS := $(shell $(LLVM_CONFIG) --cxxflags 2>/dev/null | sed 's/-std=c++[^ ]*//g')
+LLVM_LDFLAGS := $(shell $(LLVM_CONFIG) --ldflags 2>/dev/null)
+LLVM_LIBS := $(shell $(LLVM_CONFIG) --libs 2>/dev/null)
+
+# Clang resource directory (for builtins like stddef.h)
+CLANG_RESOURCE_DIR := $(AOCC_PREFIX)/lib/clang/17
 
 # Update compiler flags with LLVM flags
-CXXFLAGS += $(LLVM_CXXFLAGS)
+CXXFLAGS += $(LLVM_CXXFLAGS) -DCLANG_RESOURCE_DIR=\"$(CLANG_RESOURCE_DIR)\"
+
+# Check for optional libraries
+HAS_PFM := $(shell pkg-config --exists libpfm 2>/dev/null && echo 1 || (test -f /usr/lib64/libpfm.so -o -f /usr/lib/x86_64-linux-gnu/libpfm.so -o -f /usr/lib/libpfm.so) && echo 1 || echo 0)
+HAS_PAPI := $(shell pkg-config --exists papi 2>/dev/null && echo 1 || (test -f /usr/lib64/libpapi.so -o -f /usr/lib/x86_64-linux-gnu/libpapi.so -o -f /usr/lib/libpapi.so) && echo 1 || echo 0)
+
+ifeq ($(HAS_PFM),1)
+  PFM_FLAG := -lpfm
+  CFLAGS += -DHAVE_PFM
+  CXXFLAGS += -DHAVE_PFM
+else
+  PFM_FLAG :=
+endif
+
+ifeq ($(HAS_PAPI),1)
+  PAPI_FLAG := -lpapi
+  CFLAGS += -DHAVE_PAPI
+  CXXFLAGS += -DHAVE_PAPI
+else
+  PAPI_FLAG :=
+endif
 
 # Source files
 C_SOURCES := common.c \
@@ -80,17 +105,17 @@ CLANG_LIBS := -lclangTooling \
               -lclangFormat \
               -lclangToolingRefactoring \
               -lclangDynamicASTMatchers \
-              -lclangIndex \
-              -lclangFrontendTool
+              -lclangIndex
 
 # System libraries
-SYS_LIBS := -lpthread -ldl -lm -lpfm -lpapi
+SYS_LIBS := -lpthread -ldl -lm $(PFM_FLAG) $(PAPI_FLAG)
 
 # Full linker flags
-LDFLAGS := -L/usr/lib/llvm-14/lib \
+LDFLAGS := -L$(AOCC_PREFIX)/lib \
+           -Wl,-rpath,$(AOCC_PREFIX)/lib \
            $(LLVM_LDFLAGS) \
            $(CLANG_LIBS) \
-           -lLLVM-14 \
+           $(LLVM_LIBS) \
            $(SYS_LIBS)
 
 # Default target
@@ -140,6 +165,8 @@ debug:
 	@echo "CXXFLAGS = $(CXXFLAGS)"
 	@echo "LDFLAGS = $(LDFLAGS)"
 	@echo "OBJS = $(OBJS)"
+	@echo "HAS_PFM = $(HAS_PFM)"
+	@echo "HAS_PAPI = $(HAS_PAPI)"
 
 # Run tests
 test: $(TARGET)

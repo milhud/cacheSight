@@ -13,6 +13,9 @@ struct recommendation_engine {
     pthread_mutex_t mutex;
 };
 
+// Forward declaration for comparator (defined later in file)
+static int compare_recommendations(const void *a, const void *b);
+
 /// Current: isDuplicate is not working properly
 // Fix: Improve deduplication logic
 static bool isDuplicate(optimization_rec_t* recs, int count, 
@@ -636,49 +639,6 @@ int recommendation_engine_analyze_all(recommendation_engine_t *engine,
     
     int total_count = 0;
     
-    // Helper function to check if we already have this type at this location
-    auto already_has_recommendation = [&](const char* file, int line, optimization_type_t type) -> bool {
-        for (int i = 0; i < tracked_count; i++) {
-            if (tracked_locations[i].line == line && 
-                strcmp(tracked_locations[i].file, file) == 0) {
-                // Check if we already have this type
-                for (int j = 0; j < tracked_locations[i].type_count; j++) {
-                    if (tracked_locations[i].types[j] == type) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-        }
-        return false;
-    };
-    
-    // Helper function to add a tracked recommendation
-    auto track_recommendation = [&](const char* file, int line, optimization_type_t type) {
-        // Find or create location entry
-        int loc_idx = -1;
-        for (int i = 0; i < tracked_count; i++) {
-            if (tracked_locations[i].line == line && 
-                strcmp(tracked_locations[i].file, file) == 0) {
-                loc_idx = i;
-                break;
-            }
-        }
-        
-        if (loc_idx == -1) {
-            // New location
-            loc_idx = tracked_count++;
-            strncpy(tracked_locations[loc_idx].file, file, 255);
-            tracked_locations[loc_idx].line = line;
-            tracked_locations[loc_idx].type_count = 0;
-        }
-        
-        // Add type if there's room
-        if (tracked_locations[loc_idx].type_count < 10) {
-            tracked_locations[loc_idx].types[tracked_locations[loc_idx].type_count++] = type;
-        }
-    };
-    
     // Process each pattern
     for (int i = 0; i < pattern_count; i++) {
         // Skip patterns without valid hotspot data
@@ -710,7 +670,19 @@ int recommendation_engine_analyze_all(recommendation_engine_t *engine,
                 optimization_type_t type = recs[j].type;
                 
                 // Skip if we already have this type of recommendation at this location
-                if (already_has_recommendation(file, line, type)) {
+                bool already_have = false;
+                for (int k = 0; k < tracked_count && !already_have; k++) {
+                    if (tracked_locations[k].line == line &&
+                        strcmp(tracked_locations[k].file, file) == 0) {
+                        for (int m = 0; m < tracked_locations[k].type_count; m++) {
+                            if (tracked_locations[k].types[m] == type) {
+                                already_have = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (already_have) {
                     LOG_DEBUG("Skipping duplicate %s at %s:%d",
                              optimization_type_to_string(type), file, line);
                     continue;
@@ -742,7 +714,27 @@ int recommendation_engine_analyze_all(recommendation_engine_t *engine,
                 // Only include if it passes all filters
                 if (should_include && total_count < max_total) {
                     temp_recs[total_count] = recs[j];
-                    track_recommendation(file, line, type);
+                    // Track this recommendation location
+                    {
+                        int loc_idx = -1;
+                        for (int k = 0; k < tracked_count; k++) {
+                            if (tracked_locations[k].line == line &&
+                                strcmp(tracked_locations[k].file, file) == 0) {
+                                loc_idx = k;
+                                break;
+                            }
+                        }
+                        if (loc_idx == -1) {
+                            loc_idx = tracked_count++;
+                            strncpy(tracked_locations[loc_idx].file, file, 255);
+                            tracked_locations[loc_idx].file[255] = '\0';
+                            tracked_locations[loc_idx].line = line;
+                            tracked_locations[loc_idx].type_count = 0;
+                        }
+                        if (tracked_locations[loc_idx].type_count < 10) {
+                            tracked_locations[loc_idx].types[tracked_locations[loc_idx].type_count++] = type;
+                        }
+                    }
                     total_count++;
                     
                     LOG_DEBUG("Added %s recommendation for %s:%d (total: %d)",
@@ -754,22 +746,7 @@ int recommendation_engine_analyze_all(recommendation_engine_t *engine,
     }
     
     // Sort by priority and expected improvement
-    qsort(temp_recs, total_count, sizeof(optimization_rec_t), 
-          [](const void* a, const void* b) -> int {
-              const optimization_rec_t* ra = (const optimization_rec_t*)a;
-              const optimization_rec_t* rb = (const optimization_rec_t*)b;
-              
-              // First sort by priority (lower number = higher priority)
-              if (ra->priority != rb->priority) {
-                  return ra->priority - rb->priority;
-              }
-              
-              // Then by expected improvement (higher is better)
-              if (ra->expected_improvement > rb->expected_improvement) return -1;
-              if (ra->expected_improvement < rb->expected_improvement) return 1;
-              
-              return 0;
-          });
+    qsort(temp_recs, total_count, sizeof(optimization_rec_t), compare_recommendations);
     
     // Final allocation and copy
     *all_recommendations = CALLOC_LOGGED(total_count, sizeof(optimization_rec_t));
@@ -789,118 +766,6 @@ int recommendation_engine_analyze_all(recommendation_engine_t *engine,
     
     return 0;
 }
-
-// Also fix the synthetic pattern generation in main.c to avoid invalid line numbers:
-// In main.c, replace the synthetic pattern generation section:
-
-    // If no dynamic profiling data, create synthetic patterns from static analysis
-    if (sample_count == 0 && static_results.pattern_count > 0) {
-        LOG_INFO("No dynamic profiling data - generating patterns from static analysis");
-        
-        // Count valid patterns (with reasonable line numbers)
-        int valid_pattern_count = 0;
-        for (int i = 0; i < static_results.pattern_count; i++) {
-            if (static_results.patterns[i].location.line > 0 && 
-                static_results.patterns[i].location.line <= 1000) {
-                valid_pattern_count++;
-            }
-        }
-        
-        if (valid_pattern_count == 0) {
-            LOG_WARNING("No valid static patterns found");
-            goto cleanup;
-        }
-        
-        hotspot_count = valid_pattern_count;
-        hotspots = CALLOC_LOGGED(hotspot_count, sizeof(cache_hotspot_t));
-        patterns = CALLOC_LOGGED(hotspot_count, sizeof(classified_pattern_t));
-        pattern_count = hotspot_count;
-        
-        int idx = 0;
-        for (int i = 0; i < static_results.pattern_count && idx < hotspot_count; i++) {
-            static_pattern_t *sp = &static_results.patterns[i];
-            
-            // Skip patterns with invalid line numbers
-            if (sp->location.line <= 0 || sp->location.line > 1000) {
-                LOG_DEBUG("Skipping pattern with invalid line %d", sp->location.line);
-                continue;
-            }
-            
-            cache_hotspot_t *hs = &hotspots[idx];
-            classified_pattern_t *pat = &patterns[idx];
-            
-            // Copy location and set dominant pattern
-            hs->location = sp->location;
-            hs->dominant_pattern = sp->pattern;
-            hs->access_stride = (sp->stride > 0 && sp->stride < 1000) ? sp->stride : 1;
-            pat->hotspot = hs;
-            
-            // Map static patterns to cache antipatterns
-            switch(sp->pattern) {
-                case SEQUENTIAL:
-                    pat->type = HOTSPOT_REUSE;
-                    hs->miss_rate = 0.05;
-                    hs->avg_latency_cycles = 4;
-                    break;
-                    
-                case STRIDED:
-                    // For matrix multiplication, strided usually means poor loop order
-                    if (strstr(sp->location.file, "matrix") != NULL) {
-                        pat->type = LOOP_INTERCHANGE_NEEDED;
-                        hs->miss_rate = 0.6;
-                    } else if (sp->stride > 8) {
-                        pat->type = STREAMING_EVICTION;
-                        hs->miss_rate = 0.5;
-                    } else {
-                        pat->type = BANK_CONFLICTS;
-                        hs->miss_rate = 0.4;
-                    }
-                    hs->avg_latency_cycles = 50 + sp->stride * 2;
-                    break;
-                    
-                case RANDOM:
-                    pat->type = IRREGULAR_GATHER_SCATTER;
-                    hs->miss_rate = 0.8;
-                    hs->avg_latency_cycles = 200;
-                    break;
-                    
-                case GATHER_SCATTER:
-                    pat->type = IRREGULAR_GATHER_SCATTER;
-                    hs->miss_rate = 0.7;
-                    hs->avg_latency_cycles = 150;
-                    break;
-                    
-                default:
-                    pat->type = UNCLASSIFIED;
-                    hs->miss_rate = 0.5;
-                    hs->avg_latency_cycles = 100;
-                    break;
-            }
-            
-            // Set other pattern fields
-            pat->severity_score = hs->miss_rate * 100;
-            pat->confidence = 0.7;  // Lower confidence for synthetic
-            pat->performance_impact = hs->miss_rate * 50;
-            
-            snprintf(pat->description, sizeof(pat->description),
-                     "Static analysis pattern: %s access with stride %d at line %d",
-                     access_pattern_to_string(sp->pattern), 
-                     hs->access_stride,
-                     sp->location.line);
-            snprintf(pat->root_cause, sizeof(pat->root_cause),
-                     "Detected from static code analysis at %s:%d",
-                     sp->location.file, sp->location.line);
-            
-            idx++;
-        }
-        
-        // Adjust counts if we skipped any
-        hotspot_count = idx;
-        pattern_count = idx;
-        
-        LOG_INFO("Generated %d synthetic patterns from static analysis", pattern_count);
-    }
-
 
 // Create recommendation engine
 recommendation_engine_t* recommendation_engine_create(const engine_config_t *config,
@@ -1185,9 +1050,25 @@ int recommendation_engine_analyze(recommendation_engine_t *engine,
                 }
             }
             break;
-            
+
+        case NESTED_LOOP:
+        case ACCESS_LOOP_CARRIED_DEP:
+        case INDIRECT_ACCESS:
+            // Loop tiling for nested loops and loop-carried dependencies
+            if (count < engine->config.max_recommendations) {
+                if (generate_loop_tiling_recommendation(pattern, &engine->cache_info, &recs[count]) == 0) {
+                    recs[count].expected_improvement = 30.0;
+                    recs[count].confidence_score = 0.7;
+                    recs[count].implementation_difficulty = 5;
+                    if (!isDuplicate(recs, count, recs[count].type, pattern)) {
+                        count++;
+                    }
+                }
+            }
+            break;
+
         default:
-            LOG_WARNING("Unknown access pattern: %d", pattern->hotspot->dominant_pattern);
+            LOG_DEBUG("No specific recommendation for access pattern: %d", pattern->hotspot->dominant_pattern);
             break;
     }
     

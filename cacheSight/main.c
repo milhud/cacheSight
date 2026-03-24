@@ -215,63 +215,22 @@ static int run_dynamic_profiling(const analysis_config_t *config,
 }
 
 
-/*
-// Helper functions for pattern classification
-static miss_type_t classify_miss_type(cache_hotspot_t *hotspot, cache_info_t *cache_info) {
-    if (hotspot->miss_rate > 0.8) {
-        return MISS_COMPULSORY;
-    } else if (hotspot->miss_rate > 0.5) {
-        return MISS_CAPACITY;
-    } else if (hotspot->miss_rate > 0.3) {
-        return MISS_CONFLICT;
-    }
-    return MISS_COHERENCE;
-}
-
-
-
-static int determine_affected_levels(cache_hotspot_t *hotspot, cache_info_t *cache_info) {
-    int levels = 0;
-    for (int i = 0; i < 4; i++) {
-        if (hotspot->cache_levels_affected[i] > 0) {
-            levels |= (1 << i);
-        }
-    }
-    return levels ? levels : 0x07; // Default to L1,L2,L3 if no data
-}
-
-static double calculate_performance_impact(classified_pattern_t *pattern, cache_info_t *cache_info) {
-    // Simple impact calculation based on miss rate and latency
-    if (pattern->hotspot) {
-        double impact = pattern->hotspot->miss_rate * 100.0;
-        if (pattern->hotspot->avg_latency_cycles > 100) {
-            impact *= 1.5;
-        }
-        return impact > 90.0 ? 90.0 : impact;
-    }
-    return 50.0; // Default
-}
-
-static void generate_pattern_description(classified_pattern_t *pattern) {
-    snprintf(pattern->description, sizeof(pattern->description),
-             "%s pattern detected with %.1f%% miss rate",
-             cache_antipattern_to_string(pattern->type),
-             pattern->hotspot ? pattern->hotspot->miss_rate * 100 : 0);
-             
-    snprintf(pattern->root_cause, sizeof(pattern->root_cause),
-             "Access pattern: %s",
-             pattern->hotspot ? access_pattern_to_string(pattern->hotspot->dominant_pattern) : "unknown");
-}
-
-*/
-
 // Main analysis pipeline
 static int run_analysis(const analysis_config_t *config) {
     int ret = 0;
-    
+    analysis_results_t static_results = {0};
+    cache_miss_sample_t *samples = NULL;
+    int sample_count = 0;
+    cache_hotspot_t *hotspots = NULL;
+    int hotspot_count = 0;
+    classified_pattern_t *patterns = NULL;
+    int pattern_count = 0;
+    optimization_rec_t *recommendations = NULL;
+    int rec_count = 0;
+
     // Initialize subsystems
     LOG_INFO("Initializing cache optimizer subsystems");
-    
+
     // Detect hardware
     cache_info_t cache_info;
     hardware_detector_init();
@@ -279,29 +238,26 @@ static int run_analysis(const analysis_config_t *config) {
         LOG_ERROR("Failed to detect cache hierarchy");
         return -1;
     }
-    
+
     print_cache_info(&cache_info);
-    
+
     // Save cache info
     save_cache_info_to_file(&cache_info, "cache_info.txt");
-    
+
     // Run static analysis if requested
-    analysis_results_t static_results = {0};
     if (strcmp(config->mode, "static") == 0 || strcmp(config->mode, "full") == 0) {
         if (config->num_source_files > 0) {
             ret = run_static_analysis(config, &static_results);
             if (ret != 0 && strcmp(config->mode, "static") == 0) {
                 goto cleanup;
             }
-            //ast_analyzer_print_results(&static_results); // SEGMENTATION FAULT WHEN UNCOMMENTED
+            ast_analyzer_print_results(&static_results);
         } else {
             LOG_WARNING("No source files provided for static analysis");
         }
     }
-    
+
     // Run dynamic profiling if requested
-    cache_miss_sample_t *samples = NULL;
-    int sample_count = 0;
     
     if (strcmp(config->mode, "dynamic") == 0 || strcmp(config->mode, "full") == 0) {
         ret = run_dynamic_profiling(config, &samples, &sample_count);
@@ -311,9 +267,6 @@ static int run_analysis(const analysis_config_t *config) {
     }
     
     // Process samples into hotspots
-    cache_hotspot_t *hotspots = NULL;
-    int hotspot_count = 0;
-    
     if (sample_count > 0) {
         LOG_INFO("Processing samples into hotspots");
         
@@ -340,9 +293,6 @@ static int run_analysis(const analysis_config_t *config) {
     }
     
     // Pattern classification
-    classified_pattern_t *patterns = NULL;
-    int pattern_count = 0;
-    
     if (hotspot_count > 0) {
         LOG_INFO("Classifying cache patterns");
         
@@ -484,9 +434,6 @@ static int run_analysis(const analysis_config_t *config) {
     }
     
     // Generate recommendations
-    optimization_rec_t *recommendations = NULL;
-    int rec_count = 0;
-    
     if (!config->no_recommendations && pattern_count > 0) {
         LOG_INFO("Generating optimization recommendations");
         
@@ -547,48 +494,35 @@ static int run_analysis(const analysis_config_t *config) {
     }
     
     cleanup:
-	    // Free allocated memory - order matters to prevent double-free!
-	    
-	    // Free AST analyzer results first
-	    if (static_results.patterns || static_results.loops || static_results.structs) {
-		LOG_DEBUG("Freeing static analysis results");
-		ast_analyzer_free_results(&static_results);
-		// These are already set to nullptr in ast_analyzer_free_results
-	    }
-	    
-	    // Free samples
-	    if (samples) {
-		LOG_DEBUG("Freeing samples");
-		perf_sampler_free_samples(samples);
-		samples = NULL;
-	    }
-	    
-	    // Free hotspots - this has its own deep cleanup
-	    if (hotspots) {
-		LOG_DEBUG("Freeing %d hotspots", hotspot_count);
-		sample_collector_free_hotspots(hotspots, hotspot_count);
-		hotspots = NULL;
-	    }
-	    
-	    // Free patterns array (but not the pattern objects they point to)
-	    if (patterns) {
-		LOG_DEBUG("Freeing patterns array");
-		free(patterns);
-		patterns = NULL;
-	    }
-	    
-	    // Free recommendations array
-	    if (recommendations) {
-		LOG_DEBUG("Freeing recommendations array");
-		free(recommendations);
-		recommendations = NULL;
-	    }
-	    
-	    // Cleanup hardware detector
-	    hardware_detector_cleanup();
-	    
-	    LOG_DEBUG("Cleanup complete");
-	    return ret;
+        // Free allocated memory - order matters to prevent double-free!
+
+        if (static_results.patterns || static_results.loops || static_results.structs) {
+            ast_analyzer_free_results(&static_results);
+        }
+
+        if (samples) {
+            perf_sampler_free_samples(samples);
+            samples = NULL;
+        }
+
+        if (hotspots) {
+            sample_collector_free_hotspots(hotspots, hotspot_count);
+            hotspots = NULL;
+        }
+
+        if (patterns) {
+            free(patterns);
+            patterns = NULL;
+        }
+
+        if (recommendations) {
+            free(recommendations);
+            recommendations = NULL;
+        }
+
+        hardware_detector_cleanup();
+
+        return ret;
 }
 
 int main(int argc, char *argv[]) {

@@ -1,10 +1,21 @@
 #include "perf_sampler.h"
+#ifdef HAVE_PFM
 #include <perfmon/pfmlib.h>
 #include <perfmon/pfmlib_perf_event.h>
+#endif
 #include <sys/mman.h>
 #include <poll.h>
 #include <signal.h>
-//#include <linux/perf_event.h>
+#include <linux/perf_event.h>
+#include <sys/syscall.h>
+#include <unistd.h>
+#include <sys/ioctl.h>
+
+// perf_event_open syscall wrapper
+static long perf_event_open(struct perf_event_attr *hw_event, pid_t pid,
+                            int cpu, int group_fd, unsigned long flags) {
+    return syscall(__NR_perf_event_open, hw_event, pid, cpu, group_fd, flags);
+}
 
 #define MMAP_PAGES 256  // Number of pages for ring buffer
 
@@ -35,18 +46,20 @@ static bool g_pfm_initialized = false;
 // Initialize libpfm4
 static int init_libpfm(void) {
     if (g_pfm_initialized) {
-        return PFM_SUCCESS;
+        return 0;
     }
-    
+#ifdef HAVE_PFM
     int ret = pfm_initialize();
     if (ret != PFM_SUCCESS) {
         LOG_ERROR("Failed to initialize libpfm4: %s", pfm_strerror(ret));
         return ret;
     }
-    
-    g_pfm_initialized = true;
     LOG_INFO("libpfm4 initialized successfully");
-    return PFM_SUCCESS;
+#else
+    LOG_INFO("libpfm4 not available, using direct perf_event interface");
+#endif
+    g_pfm_initialized = true;
+    return 0;
 }
 
 // Helper to parse perf sample data
@@ -181,7 +194,7 @@ perf_sampler_t* perf_sampler_create(const perf_config_t *config) {
         return NULL;
     }
     
-    if (init_libpfm() != PFM_SUCCESS) {
+    if (init_libpfm() != 0) {
         return NULL;
     }
     

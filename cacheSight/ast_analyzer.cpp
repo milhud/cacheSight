@@ -256,7 +256,7 @@ public:
                     patterns.push_back(master_pattern);
                     
                     // Also store individual patterns in loop for detailed analysis
-                    loop.patterns = new static_pattern_t[loop.pattern_count];
+                    loop.patterns = (static_pattern_t*)malloc(loop.pattern_count * sizeof(static_pattern_t));
                     for (int i = 0; i < loop.pattern_count; i++) {
                         loop.patterns[i] = ctx->patterns[i];
                     }
@@ -305,29 +305,29 @@ public:
     void getResults(analysis_results_t *results) {
         results->pattern_count = patterns.size();
         if (results->pattern_count > 0) {
-            results->patterns = new static_pattern_t[results->pattern_count];
+            results->patterns = (static_pattern_t*)malloc(results->pattern_count * sizeof(static_pattern_t));
             std::copy(patterns.begin(), patterns.end(), results->patterns);
         }
-        
+
         results->loop_count = loops.size();
         if (results->loop_count > 0) {
-            results->loops = new loop_info_t[results->loop_count];
+            results->loops = (loop_info_t*)malloc(results->loop_count * sizeof(loop_info_t));
             std::copy(loops.begin(), loops.end(), results->loops);
         }
-        
+
         results->struct_count = structs.size();
         if (results->struct_count > 0) {
-            results->structs = new struct_info_t[results->struct_count];
+            results->structs = (struct_info_t*)malloc(results->struct_count * sizeof(struct_info_t));
             std::copy(structs.begin(), structs.end(), results->structs);
         }
-        
+
         // Convert diagnostics
         if (!diagnostics.empty()) {
             size_t total_size = 0;
             for (const auto &diag : diagnostics) {
                 total_size += diag.length() + 1;
             }
-            results->diagnostics = new char[total_size];
+            results->diagnostics = (char*)malloc(total_size);
             
             char *p = results->diagnostics;
             for (const auto &diag : diagnostics) {
@@ -341,12 +341,19 @@ public:
 private:
     void fillSourceLocation(SourceLocation loc, source_location_t *src_loc) {
         PresumedLoc ploc = source_mgr->getPresumedLoc(loc);
-        strncpy(src_loc->file, ploc.getFilename(), sizeof(src_loc->file) - 1);
+        const char *filename = ploc.getFilename();
+        if (filename) {
+            strncpy(src_loc->file, filename, sizeof(src_loc->file) - 1);
+            src_loc->file[sizeof(src_loc->file) - 1] = '\0';
+        } else {
+            strncpy(src_loc->file, "<unknown>", sizeof(src_loc->file) - 1);
+        }
         src_loc->line = ploc.getLine();
         src_loc->column = ploc.getColumn();
-        
+
         if (current_function) {
             strncpy(src_loc->function, current_function->name.c_str(), sizeof(src_loc->function) - 1);
+            src_loc->function[sizeof(src_loc->function) - 1] = '\0';
         }
     }
     
@@ -1005,12 +1012,15 @@ int ast_analyzer_analyze_file(ast_analyzer_t *analyzer, const char *filename,
     // Create compilation database
     std::vector<const char*> argv;
     argv.push_back("cache_optimizer");
-    argv.push_back(filename);  // Changed from 'file' to 'filename'
+    argv.push_back(filename);
     argv.push_back("--");
     argv.push_back("-std=c11");
+    // Add Clang resource directory so builtins (stddef.h etc.) are found
+    argv.push_back("-resource-dir");
+    argv.push_back(CLANG_RESOURCE_DIR);
 
     // Add include paths
-    for (const auto &inc : analyzer->include_paths) {  // Use the vector directly
+    for (const auto &inc : analyzer->include_paths) {
         argv.push_back(inc.c_str());
     }
 
@@ -1083,21 +1093,21 @@ int ast_analyzer_analyze_files(ast_analyzer_t *analyzer, const char **filenames,
             
             // Only free if we still own the memory
             if (results.patterns) {
-                delete[] results.patterns;
+                free(results.patterns);
             }
             if (results.loops) {
                 for (int i = 0; i < results.loop_count; i++) {
                     if (results.loops[i].patterns) {
-                        delete[] results.loops[i].patterns;
+                        free(results.loops[i].patterns);
                     }
                 }
-                delete[] results.loops;
+                free(results.loops);
             }
             if (results.structs) {
-                delete[] results.structs;
+                free(results.structs);
             }
             if (results.diagnostics) {
-                delete[] results.diagnostics;
+                free(results.diagnostics);
             }
         }
     };
@@ -1128,13 +1138,13 @@ int ast_analyzer_analyze_files(ast_analyzer_t *analyzer, const char **filenames,
     
     // Allocate result arrays
     if (total_patterns > 0) {
-        results->patterns = new static_pattern_t[total_patterns];
+        results->patterns = (static_pattern_t*)malloc(total_patterns * sizeof(static_pattern_t));
     }
     if (total_loops > 0) {
-        results->loops = new loop_info_t[total_loops];
+        results->loops = (loop_info_t*)malloc(total_loops * sizeof(loop_info_t));
     }
     if (total_structs > 0) {
-        results->structs = new struct_info_t[total_structs];
+        results->structs = (struct_info_t*)malloc(total_structs * sizeof(struct_info_t));
     }
     
     // Second pass: copy data (now the pointers are still valid)
@@ -1157,11 +1167,12 @@ int ast_analyzer_analyze_files(ast_analyzer_t *analyzer, const char **filenames,
         if (file_results.loops && file_results.loop_count > 0) {
             for (int i = 0; i < file_results.loop_count; i++) {
                 results->loops[loop_offset] = file_results.loops[i];
-                
-                // Deep copy the patterns array if it exists
+                // Always reset the patterns pointer — FileResultsHolder will free the
+                // original, so we must own a fresh copy or NULL.
+                results->loops[loop_offset].patterns = nullptr;
                 if (file_results.loops[i].patterns && file_results.loops[i].pattern_count > 0) {
                     int pcount = file_results.loops[i].pattern_count;
-                    results->loops[loop_offset].patterns = new static_pattern_t[pcount];
+                    results->loops[loop_offset].patterns = (static_pattern_t*)malloc(pcount * sizeof(static_pattern_t));
                     std::copy(file_results.loops[i].patterns,
                              file_results.loops[i].patterns + pcount,
                              results->loops[loop_offset].patterns);
@@ -1189,48 +1200,35 @@ int ast_analyzer_analyze_files(ast_analyzer_t *analyzer, const char **filenames,
     return 0;
 }
 
-// In ast_analyzer.cpp - Replace the entire ast_analyzer_free_results function:
-
 void ast_analyzer_free_results(analysis_results_t *results) {
     if (!results) return;
-    
-    LOG_DEBUG("Freeing analysis results - patterns:%p loops:%p structs:%p", 
-              results->patterns, results->loops, results->structs);
-    
-    // Free patterns array
+
     if (results->patterns) {
-        delete[] results->patterns;
+        free(results->patterns);
         results->patterns = nullptr;
     }
-    
-    // Free loops array - MUST free nested patterns first!
+
     if (results->loops) {
-        // First free any nested pattern arrays in each loop
         for (int i = 0; i < results->loop_count; i++) {
             if (results->loops[i].patterns) {
-                LOG_DEBUG("Freeing loop[%d] patterns array", i);
-                delete[] results->loops[i].patterns;
-                results->loops[i].patterns = nullptr;  // Clear pointer
+                free(results->loops[i].patterns);
+                results->loops[i].patterns = nullptr;
             }
         }
-        // Then free the loops array itself
-        delete[] results->loops;
+        free(results->loops);
         results->loops = nullptr;
     }
-    
-    // Free structs array
+
     if (results->structs) {
-        delete[] results->structs;
+        free(results->structs);
         results->structs = nullptr;
     }
-    
-    // Free diagnostics
+
     if (results->diagnostics) {
-        delete[] results->diagnostics;
+        free(results->diagnostics);
         results->diagnostics = nullptr;
     }
-    
-    // Clear counts
+
     results->pattern_count = 0;
     results->loop_count = 0;
     results->struct_count = 0;
@@ -1238,41 +1236,50 @@ void ast_analyzer_free_results(analysis_results_t *results) {
 }
 
 void ast_analyzer_print_results(const analysis_results_t *results) {
+    if (!results) return;
+
     printf("\n=== AST Analysis Results ===\n");
-    
+
     printf("\nAccess Patterns Found: %d\n", results->pattern_count);
-    for (int i = 0; i < results->pattern_count && i < 10; i++) {
-        const static_pattern_t *p = &results->patterns[i];
-        printf("  [%d] %s:%d - %s access to %s (pattern: %s, stride: %d)\n",
-               i, p->location.file, p->location.line,
-               p->is_struct_access ? "Struct" : "Array",
-               p->is_struct_access ? p->struct_name : p->array_name,
-               access_pattern_to_string(p->pattern),
-               p->stride);
+    if (results->patterns) {
+        for (int i = 0; i < results->pattern_count && i < 10; i++) {
+            const static_pattern_t *p = &results->patterns[i];
+            printf("  [%d] %s:%d - %s access to %s (pattern: %s, stride: %d)\n",
+                   i,
+                   p->location.file[0] ? p->location.file : "<unknown>",
+                   p->location.line,
+                   p->is_struct_access ? "Struct" : "Array",
+                   p->is_struct_access ? p->struct_name : p->array_name,
+                   access_pattern_to_string(p->pattern),
+                   p->stride);
+        }
     }
     
     printf("\nLoops Found: %d\n", results->loop_count);
-    for (int i = 0; i < results->loop_count && i < 10; i++) {
-        const loop_info_t *l = &results->loops[i];
-        printf("  [%d] %s:%d - Loop var: %s, depth: %d, est. iterations: %zu\n",
-               i, l->location.file, l->location.line,
-               l->loop_var, l->nest_level, l->estimated_iterations);
-        if (l->has_nested_loops) {
-            printf("      Has nested loops\n");
-        }
-        if (l->pattern_count > 0) {
-            printf("      Contains %d access patterns\n", l->pattern_count);
+    if (results->loops) {
+        for (int i = 0; i < results->loop_count && i < 10; i++) {
+            const loop_info_t *l = &results->loops[i];
+            printf("  [%d] %s:%d - Loop var: %s, depth: %d, est. iterations: %zu\n",
+                   i,
+                   l->location.file[0] ? l->location.file : "<unknown>",
+                   l->location.line,
+                   l->loop_var[0] ? l->loop_var : "?",
+                   l->nest_level, l->estimated_iterations);
+            if (l->has_nested_loops) printf("      Has nested loops\n");
+            if (l->pattern_count > 0) printf("      Contains %d access patterns\n", l->pattern_count);
         }
     }
-    
+
     printf("\nStructs Found: %d\n", results->struct_count);
-    for (int i = 0; i < results->struct_count && i < 10; i++) {
-        const struct_info_t *s = &results->structs[i];
-        printf("  [%d] %s - %d fields, %zu bytes total\n",
-               i, s->struct_name, s->field_count, s->total_size);
-        for (int j = 0; j < s->field_count && j < 5; j++) {
-            printf("      %s: offset %zu, size %zu\n",
-                   s->field_names[j], s->field_offsets[j], s->field_sizes[j]);
+    if (results->structs) {
+        for (int i = 0; i < results->struct_count && i < 10; i++) {
+            const struct_info_t *s = &results->structs[i];
+            printf("  [%d] %s - %d fields, %zu bytes total\n",
+                   i, s->struct_name, s->field_count, s->total_size);
+            for (int j = 0; j < s->field_count && j < 5; j++) {
+                printf("      %s: offset %zu, size %zu\n",
+                       s->field_names[j], s->field_offsets[j], s->field_sizes[j]);
+            }
         }
     }
 }

@@ -4,8 +4,37 @@
 #include <unistd.h>
 #include <sys/syscall.h>
 #include "papi_sampler.h"
-#include <papi.h>
 #include <pthread.h>
+
+#ifndef HAVE_PAPI
+// Stub implementations when PAPI is not available
+papi_sampler_t* papi_sampler_create(const papi_config_t *config) {
+    (void)config;
+    LOG_WARNING("PAPI not available - papi_sampler_create returns NULL");
+    return NULL;
+}
+void papi_sampler_destroy(papi_sampler_t *sampler) { (void)sampler; }
+int papi_sampler_start(papi_sampler_t *sampler) { (void)sampler; return -1; }
+int papi_sampler_stop(papi_sampler_t *sampler) { (void)sampler; return -1; }
+bool papi_sampler_is_running(const papi_sampler_t *sampler) { (void)sampler; return false; }
+int papi_sampler_get_samples(papi_sampler_t *sampler, cache_miss_sample_t **samples, int *count) {
+    (void)sampler; if (samples) *samples = NULL; if (count) *count = 0; return -1;
+}
+int papi_check_availability(void) { return -1; }
+int papi_list_cache_events(char *buffer, size_t buffer_size) {
+    (void)buffer; (void)buffer_size; return -1;
+}
+papi_config_t papi_config_default(void) {
+    papi_config_t config = {};
+    config.base_config = perf_config_default();
+    return config;
+}
+int papi_sampler_get_stats(const papi_sampler_t *sampler, perf_stats_t *stats) {
+    (void)sampler; if (stats) memset(stats, 0, sizeof(*stats)); return -1;
+}
+#else  // HAVE_PAPI
+
+#include <papi.h>
 
 /// Fallback for systems without sched_getcpu
 #ifndef HAVE_SCHED_GETCPU
@@ -546,6 +575,8 @@ int papi_sampler_get_stats(const papi_sampler_t *sampler, perf_stats_t *stats) {
     }
     
     pthread_mutex_unlock((pthread_mutex_t*)&sampler->samples_mutex);
-    
+
     return 0;
 }
+
+#endif  // HAVE_PAPI
